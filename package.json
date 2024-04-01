@@ -1,0 +1,23 @@
+{
+  "name": "exams",
+  "version": "1.0.0",
+  "description": "A webpage providing one stop solution for university exam preparations",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "devstart": "nodemon server.js",
+    "serverstart": "SET DEBUG=express-locallibrary-tutorial:* & npm run devstart"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "ejs": "^3.1.9",
+    "express": "^4.19.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.2.3",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.0"
+  }
+}
