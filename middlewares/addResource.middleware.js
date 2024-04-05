@@ -15,6 +15,11 @@ const verifyUploadFile = (req, res, next) => {
             message : "Invalid Subject Name"
         })
     }
+    if(!req.body.file_name || req.body.file_name.length > 50) {
+        return res.status(401).send({
+            message : "Invalid Subject Name"
+        })
+    }
     if(!req.body.description || req.body.description.length > 100) {
         return res.status(401).send({
             message : "Invalid Description"

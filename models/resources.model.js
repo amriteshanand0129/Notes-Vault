@@ -14,6 +14,13 @@ const resourcesSchema = mongoose.Schema({
         trim : true,
         maxlength : 50
     },
+    file_name : {
+        type : String,
+        required : true,
+        unique : true,
+        trim : true,
+        maxlength : 50
+    },
     description : {
         type : String,
         required : true,

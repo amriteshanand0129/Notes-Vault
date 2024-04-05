@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXAMS</title>
+    <title>Document</title>
+    <script src="script.js"></script>
 </head>
 <body>
     <form action="/upload" method="post" enctype="multipart/form-data">
@@ -11,11 +12,12 @@
         <input type="text" id="subject_code" name="subject_code"><br>
         <label for="subject_name">Subject Name: </label>
         <input type="text" id="subject_name" name="subject_name"><br>
+        <label for="file_name">File Name: </label>
+        <input type="text" id="file_name" name="file_name"><br>
         <label for="description">Description</label>
         <input type="text" id="description" name="description"><br>
         <input type="file" id="fileInput" name="fileInput">
         <button type="submit">Upload file</button><br>
     </form>
-    <a href="/resources">Resources</a>
 </body>
 </html>

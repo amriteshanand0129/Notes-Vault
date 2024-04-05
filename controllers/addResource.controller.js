@@ -9,6 +9,7 @@ module.exports = async (req, res) => {
         const created = await resource_model.create({
             subject_code : req.body.subject_code,
             subject_name : req.body.subject_name,
+            file_name : req.body.file_name,
             description : req.body.description,
             filebuffer : pdfbuffer
         })

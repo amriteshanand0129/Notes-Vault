@@ -8,7 +8,7 @@
 <body>
     <p>This is resources page</p>
     <% subjects.forEach(subject => { %>
-        <li><%= subject %></li>
+        <a href="subject/<%= subject %>"><li><%= subject %></li></a>
     <% }) %>
 </body>
 </html>
