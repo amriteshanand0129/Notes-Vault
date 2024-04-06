@@ -61,38 +61,50 @@ const verifySignInBody = async (req, res, next) => {
     next()
 }
 
-const verifyToken = (req, res, next) => {
-    /**
-     * 1. Check if the token is present in the header
-     * 2. Check if the token is valid
-     */
-
-    const token = req.headers["access_token"]
-
-    if(!token) {
-        console.log(token)
-        return res.status(403).send({
-            message : "Unauthorised : No token found"
+const findToken = (req, res, next) => {
+    if(req.cookies?.token) {
+        const token = req.cookies.token
+        jwt.verify(token, auth_config.secret, async (err, decoded) => {
+            if(err) {
+                console.log("Token Validation Failed")
+                return next()
+            }
+            const user = await user_model.findOne({userId : decoded.id})
+            if(!user) {
+                return res.status(400).send({
+                    message : "Unauthorized, the user for this token does not exist"
+                })
+            }  
+            req.user = user
+            next()
         })
     }
-
-    jwt.verify(token, auth_config.secret, async (err, decoded) => {
-        if(err) {
-            return res.status(401).send({
-                message : "Unauthorised"
-            })
-        }
-        const user = await user_model.findOne({userId : decoded.id})
-        if(!user) {
-            return res.status(400).send({
-                message : "Unauthorized, the user for this token does not exist"
-            })
-        }  
-
-        // Set the user info in the req body for the next isAdmin check
-        req.user = user
+    else {
         next()
-    })
+    }
+}
+
+const verifyToken = (req, res, next) => {
+
+    if(req.cookies?.token) {
+        const token = req.cookies.token
+        jwt.verify(token, auth_config.secret, async (err, decoded) => {
+            if(err) {
+                return res.redirect("/login")
+            }
+            const user = await user_model.findOne({userId : decoded.id})
+            if(!user) {
+                return res.status(400).send({
+                    message : "Unauthorized, the user for this token does not exist"
+                })
+            }  
+            req.user = user
+            next()
+        })
+    }
+    else {
+        res.redirect("/login")
+    }
 }
 
 const isAdmin = (req, res, next) => {
@@ -106,9 +118,11 @@ const isAdmin = (req, res, next) => {
         })
     }
 }
+
 module.exports = {
     verifySignUpbody : verifySignUpBody,
     verifySignInBody : verifySignInBody,
+    findToken : findToken,
     verifyToken : verifyToken,
     isAdmin : isAdmin
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Contribution</title>
+</head>
+<body>
+    <form action="/addContribution" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="contributedBy">Contributed By: </label>
+        <input type="text" id="contributedBy" name="contributedBy" value="<%= resource.contributedBy %>" readonly><br>
+        <input type="text" id="_id" name="_id" value="<%= resource._id %>">
+        <input type="text" id="contributerId" name="contributerId" value="<%= resource.contributerId %>">
+        <label for="subject_code">Subject Code</label>
+        <input type="text" id="subject_code" name="subject_code" value="<%= resource.subject_code %>"><br>
+        <label for="subject_name">Subject Name: </label>
+        <input type="text" id="subject_name" name="subject_name" value="<%= resource.subject_name %>"><br>
+        <label for="file_name">File Name: </label>
+        <input type="text" id="file_name" name="file_name" value="<%= resource.file_name %>"><br>
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" value="<%= resource.description %>"><br>
+        <iframe src="/fetch_pendingfile/<%= resource._id %>" frameborder="0"></iframe><br>
+        <input type="submit">
+    </form>
+</body>
+</html>

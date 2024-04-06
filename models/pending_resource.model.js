@@ -1,8 +1,15 @@
 const mongoose = require("mongoose")
 
-const resourcesSchema = mongoose.Schema({
+const pending_resourcesSchema = mongoose.Schema({
+    contributedBy : {
+        type : String,
+        required : true,
+        trim : true,
+        maxlength : 30
+    },
     contributerId : {
         type : Object,
+        required : true,
         trim : true,
     },
     subject_code : {
@@ -10,7 +17,6 @@ const resourcesSchema = mongoose.Schema({
         required : true,
         trim : true,
         maxlength : 10,
-        index : true
     },
     subject_name : {
         type : String,
@@ -37,4 +43,4 @@ const resourcesSchema = mongoose.Schema({
     }
 }, {timestamps : true, versionKey : false})
 
-module.exports = mongoose.model("Resources", resourcesSchema)
+module.exports = mongoose.model("Pending Resources", pending_resourcesSchema)

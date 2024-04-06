@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomePage Signed</title>
+    <script>
+        function logout() {
+            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            window.location.href = '/'; 
+        }
+    </script>
+</head>
+<body>
+    <p>This is homepage after signin</p>
+    <p>Hello <%= user.name %> </p>
+    <a href="/resources">Resources</a><br>
+    <a href="/addResources">Add Resources</a><br>
+    <a href="/profile">View Profile</a>
+    <button onclick="logout()">Logout</button>
+</body>
+</html>

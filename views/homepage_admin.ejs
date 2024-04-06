@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin HomePage</title>
+</head>
+<body>
+    <h2>Hello ADMIN <%= user.name %></h2>
+    <a href="/addResources">Add Resources</a><br>
+    <a href="/resources">Resources</a><br>
+
+
+    <ol>
+        <% pending_resources.forEach(resources => { %>
+         <li>
+            <div>
+                <h4>Contributed by: <%= resources.contributedBy %> </h4>
+                <h5>Subject Code: <%= resources.subject_code %> </h5>
+                <h5>Subject Name: <%= resources.subject_name %> </h5>
+                <p>File Name: <%= resources.file_name %> </p>
+                <p>Description: <%= resources.description %> </p>
+                <iframe src="/fetch_pendingfile/<%= resources._id %>" frameborder="0"></iframe>
+            </div>
+            <a href="/addContribution/<%= resources._id %>">Add this Contribution</a>
+         </li>
+        <% }) %>
+    </ol>
+</body>
+</html>

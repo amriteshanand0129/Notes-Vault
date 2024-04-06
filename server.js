@@ -1,15 +1,20 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const path = require("path")
+const cookie_parser = require("cookie-parser")
+const bcrypt = require("bcryptjs")
 
 const server_config = require("./configs/server.config")
 const db_config = require("./configs/db.config")
 
 const user_model = require("./models/user.model")
 const resource_model = require("./models/resources.model")
+const pending_resource_model = require("./models/pending_resource.model")
+const auth_middleware = require("./middlewares/auth.middleware")
 
 const app = express()
 
+app.use(cookie_parser())
 app.use(express.json())
 app.use(express.static("public"))
 
@@ -34,7 +39,7 @@ async function init() {
             const new_admin = await user_model.create({
                 name : "Amritesh Anand",
                 userId : "amritesh",
-                password : "amritesh",
+                password : bcrypt.hashSync("amritesh", 8),
                 userType : "ADMIN"
             })
             console.log("New Admin Created")
@@ -47,7 +52,21 @@ async function init() {
 app.set("view engine", "ejs")
 app.set("views", path.resolve("./views"))
 
-app.get("/", (req, res) => {
+app.get("/", auth_middleware.findToken, async (req, res) => {
+    if(req.user) {
+        if(req.user.userType == "CUSTOMER") {
+            return res.render("homepage_signed", {
+                user : req.user
+            })
+        }
+        else if(req.user.userType == "ADMIN") {
+            const pending_resources = await pending_resource_model.find()
+            return res.render("homepage_admin", {
+                user : req.user,
+                pending_resources : pending_resources
+            })
+        }
+    }
     return res.render("homepage")
 })
 app.get("/resources", async (req, res) => {
@@ -78,6 +97,18 @@ app.get("/fetchfile/:_id", async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.send(resource.filebuffer);
 })
+app.get("/fetch_pendingfile/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
+    const file_id = req.params.id
+    const resource = await pending_resource_model.findOne({_id : file_id})
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(resource.filebuffer);
+})
+app.get("/addContribution/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
+    const resource = await pending_resource_model.findOne({_id : req.params.id})
+    res.render("addContribution", {
+        resource : resource
+    })
+})
 app.get("/downloadfile/:_id", async (req, res) => {
     const file_id = req.params._id
     const resource = await resource_model.findOne({_id : file_id})
@@ -86,19 +117,23 @@ app.get("/downloadfile/:_id", async (req, res) => {
     res.send(resource.filebuffer);
 
 })
+
 app.get("/signup", async (req, res) => {
     return res.render("signup")
 })
 app.get("/login", async (req, res) => {
     return res.render("login")
 })
-app.get("/addResources", async (req, res) => {
+app.get("/addResources", auth_middleware.verifyToken, async (req, res) => {
     return res.render("addResources")
 })
-
+app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
+    res.render("profile", {
+        
+    })
+})
 require("./routes/resources.route")(app)
 require("./routes/auth.route")(app)
-require("./routes/subjects.route")(app)
 app.listen(server_config.PORT, () => {
     console.log("Server listening at :", server_config.PORT)
 })

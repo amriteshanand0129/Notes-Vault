@@ -12,11 +12,8 @@ const signup = async (req, res) => {
         password : bcrypt.hashSync(request_body.password, 8)
     }
     try {
-
-        // Registering the user in the database
         const user_created = await user_model.create(userObj)
 
-        // Creating a copy of user details as a response without user password for security
         const res_obj = {
             name : user_created.name,
             userId : user_created.userId,
@@ -31,18 +28,12 @@ const signup = async (req, res) => {
     }
 }
 const signin = async (req, res) => {
-    /**
-     * Logic to signin a user
-     * 1. Check if the user if is present in the system
-     * 2. Check if password is correct
-     * 3. Using JWT create the access token with a given Time to live and return
-     */
 
     const user = await user_model.findOne({userId : req.body.userId})
     
     if(user == null) {
         return res.status(400).send({
-            message : "User id is not a valid user"
+            message : "Not a valid user"
         })
     }
 
@@ -50,24 +41,13 @@ const signin = async (req, res) => {
 
     if(!isPasswordValid) {
         return res.status(401).send({
-            message : "Wrong password passed"
+            message : "Wrong password"
         })
     }
 
-    /**
-     * sign method will return the access token after accepting
-     * 1. payload
-     * 2. secret (to avoid possibility of duplicacy)
-     * 3. TTL (in seconds)
-     */
-    const token = jwt.sign({id : user.userId}, auth_config.secret, {expiresIn : 120})
-
-    res.status(200).send({
-        name : user.name,
-        userId : user.userId,
-        userType : user.userType,
-        accessToken : token
-    })
+    const token = jwt.sign({id : user.userId}, auth_config.secret, {expiresIn : 3600})
+    res.status(200).cookie("token", token)
+    res.redirect("/")
 }
 module.exports = {
     signup : signup,
