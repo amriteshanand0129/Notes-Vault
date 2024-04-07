@@ -6,7 +6,26 @@
     <title>Profile</title>
 </head>
 <body>
+    <h2>Hello <%= user.name %></h2>
     <h3>Pending Contributions</h3> 
+    <% pending_contributions.forEach(pending_contribution => { %>
+        <div>
+            <h4><%= pending_contribution.subject_code %></h4>
+            <h4><%= pending_contribution.subject_name %></h4>
+            <h4><%= pending_contribution.file_name %></h4>
+            <h4><%= pending_contribution.description %></h4>
+            <a href="/download_pendingfile/<%= pending_contribution._id %>" download="filename">Download File</a>
+        </div>
+    <% }) %>
     <h3>Approved Contributions</h3>
+    <% approved_contributions.forEach(approved_contribution => { %>
+        <div>
+            <h4><%= approved_contribution.subject_code %></h4>
+            <h4><%= approved_contribution.subject_name %></h4>
+            <h4><%= approved_contribution.file_name %></h4>
+            <h4><%= approved_contribution.description %></h4>
+            <a href="/downloadfile/<%= approved_contribution._id %>" download="filename">Download File</a>
+        </div>
+    <% }) %>
 </body>
 </html>

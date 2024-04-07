@@ -10,6 +10,7 @@ const db_config = require("./configs/db.config")
 const user_model = require("./models/user.model")
 const resource_model = require("./models/resources.model")
 const pending_resource_model = require("./models/pending_resource.model")
+const approved_contributions_model = require("./models/approved_contributions")
 const auth_middleware = require("./middlewares/auth.middleware")
 
 const app = express()
@@ -117,7 +118,13 @@ app.get("/downloadfile/:_id", async (req, res) => {
     res.send(resource.filebuffer);
 
 })
-
+app.get("/download_pendingfile/:_id", async (req, res) => {
+    const file_id = req.params._id
+    const resource = await pending_resource_model.findOne({_id : file_id})
+    res.setHeader('Content-Disposition', `attachment; filename="${resource.file_name}.pdf"`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(resource.filebuffer);
+})
 app.get("/signup", async (req, res) => {
     return res.render("signup")
 })
@@ -128,8 +135,22 @@ app.get("/addResources", auth_middleware.verifyToken, async (req, res) => {
     return res.render("addResources")
 })
 app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
+    const user = req.user
+    const pending_contributions = await pending_resource_model.find({contributerId : user._id})
+    const approved_contributions_ids = await approved_contributions_model.find({contributerId : user._id})
+    const approved_contributions = []
+    const promises = approved_contributions_ids.map(async approved_contribution => {
+        const approved_resource = await resource_model.findOne({ _id: approved_contribution.contributionId });
+        return approved_resource; 
+    });
+    
+    const results = await Promise.all(promises);
+    
+    approved_contributions.push(...results);
     res.render("profile", {
-        
+        user : req.user,
+        pending_contributions : pending_contributions,
+        approved_contributions : approved_contributions
     })
 })
 require("./routes/resources.route")(app)

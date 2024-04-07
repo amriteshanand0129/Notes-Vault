@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin HomePage</title>
+    <script>
+        function logout() {
+            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            window.location.href = '/'; 
+        }
+    </script>
 </head>
 <body>
     <h2>Hello ADMIN <%= user.name %></h2>
     <a href="/addResources">Add Resources</a><br>
     <a href="/resources">Resources</a><br>
+    <button onclick="logout()">Logout</button>
 
 
     <ol>

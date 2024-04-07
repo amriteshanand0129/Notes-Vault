@@ -1,5 +1,6 @@
 const resource_model = require("../models/resources.model")
 const pending_resource_model = require("../models/pending_resource.model")
+const approved_contributions_model = require("../models/approved_contributions")
 const path = require("path")
 const file = require("fs")
 
@@ -67,13 +68,23 @@ const addContribution = async (req, res) => {
     try {
         const file = await pending_resource_model.findOne({_id : req.body._id})
         const created = await resource_model.create({
-            contributerId : req.body.contributerId,
+            contributerId : file.contributerId,
             subject_code : req.body.subject_code,
             subject_name : req.body.subject_name,
             file_name : req.body.file_name,
             description : req.body.description,
             filebuffer : file.filebuffer
         })
+        try {
+            const obj = {
+                contributerId : created.contributerId,
+                contributionId : created._id 
+            }
+            const result = await approved_contributions_model.create(obj)
+            console.log(result)
+        }catch(err) {
+            console.log("Error while updating Approved Contributions list")
+        }
         const result = await pending_resource_model.deleteOne({_id : req.body._id})
         if(result.deletedCount == 1) {
             console.log("Pending Contribution List Updated")
