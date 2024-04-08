@@ -23,7 +23,9 @@ const addResource = async (req, res) => {
             })
         }catch(err) {
             console.log("Error adding resource", err)
-            res.status(401).send("Error uploading file")
+            res.status(401).send({
+                error : "Error adding resource"
+            })
         }finally {
             file.unlink(filepath, function (err) {
                 if(err)
@@ -50,8 +52,10 @@ const addResource = async (req, res) => {
                 message : "File Uploaded Successfully",
             })
         }catch(err) {
-            console.log("Error creating resource", err)
-            res.status(401).send("Error uploading file")
+            console.log("Error while adding contribution", err)
+            res.status(401).send({
+                error : "Error while adding contribution"
+            })
         }finally {
             file.unlink(filepath, function (err) {
                 if(err)
@@ -76,12 +80,10 @@ const addContribution = async (req, res) => {
             filebuffer : file.filebuffer
         })
         try {
-            const obj = {
+            const result = await approved_contributions_model.create({
                 contributerId : created.contributerId,
                 contributionId : created._id 
-            }
-            const result = await approved_contributions_model.create(obj)
-            console.log(result)
+            })
         }catch(err) {
             console.log("Error while updating Approved Contributions list")
         }
@@ -98,10 +100,17 @@ const addContribution = async (req, res) => {
         })
     }catch(err) {
         console.log("Error adding resource", err)
-        res.status(401).send("Error uploading file")
+        res.status(401).send({
+            error : "Error adding contribution resource"
+        })
     }
+}
+
+const deleteContribution = async (req, res) => {
+    const user = req.user
 }
 module.exports = {
     addResource : addResource,
-    addContribution : addContribution
+    addContribution : addContribution,
+    deleteContribution : deleteContribution
 }

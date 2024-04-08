@@ -8,18 +8,24 @@
 <body>
     <form action="/addContribution" method="post" enctype="application/x-www-form-urlencoded">
         <label for="contributedBy">Contributed By: </label>
-        <input type="text" id="contributedBy" name="contributedBy" value="<%= resource.contributedBy %>" readonly><br>
-        <input type="text" id="_id" name="_id" value="<%= resource._id %>">
-        <input type="text" id="contributerId" name="contributerId" value="<%= resource.contributerId %>">
+        <input type="text" id="contributedBy" name="contributedBy" value="<%= pending_resource.contributedBy %>" readonly><br><br>
+
+        <label for="_id">Resource Id: </label>
+        <input type="text" id="_id" name="_id" value="<%= pending_resource._id %>" readonly><br><br>
+
         <label for="subject_code">Subject Code</label>
-        <input type="text" id="subject_code" name="subject_code" value="<%= resource.subject_code %>"><br>
+        <input type="text" id="subject_code" name="subject_code" value="<%= pending_resource.subject_code %>"><br><br>
+        
         <label for="subject_name">Subject Name: </label>
-        <input type="text" id="subject_name" name="subject_name" value="<%= resource.subject_name %>"><br>
+        <input type="text" id="subject_name" name="subject_name" value="<%= pending_resource.subject_name %>"><br><br>
+        
         <label for="file_name">File Name: </label>
-        <input type="text" id="file_name" name="file_name" value="<%= resource.file_name %>"><br>
+        <input type="text" id="file_name" name="file_name" value="<%= pending_resource.file_name %>"><br><br>
+        
         <label for="description">Description</label>
-        <input type="text" id="description" name="description" value="<%= resource.description %>"><br>
-        <iframe src="/fetch_pendingfile/<%= resource._id %>" frameborder="0"></iframe><br>
+        <input type="text" id="description" name="description" value="<%= pending_resource.description %>"><br><br>
+        
+        <iframe src="/fetch_pendingfile/<%= pending_resource._id %>" frameborder="0"></iframe><br><br>
         <input type="submit">
     </form>
 </body>

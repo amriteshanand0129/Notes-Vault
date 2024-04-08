@@ -61,98 +61,183 @@ app.get("/", auth_middleware.findToken, async (req, res) => {
             })
         }
         else if(req.user.userType == "ADMIN") {
-            const pending_resources = await pending_resource_model.find()
-            return res.render("homepage_admin", {
-                user : req.user,
-                pending_resources : pending_resources
-            })
+            try {
+                const pending_resources = await pending_resource_model.find()
+                return res.render("homepage_admin", {
+                    user : req.user,
+                    pending_resources : pending_resources
+                })
+            }catch(error) {
+                console.log(error)
+                return res.status(501).send({
+                    error : "Error while searching pending contributions in database"
+                })
+            }
         }
     }
     return res.render("homepage")
 })
+
 app.get("/resources", async (req, res) => {
-    return res.render("resources", {
-        subjects : await resource_model.distinct('subject_name')
-    })
+    try {
+        const subjects = await resource_model.distinct('subject_name')
+        return res.render("resources", {
+            subjects : subjects
+        })
+    }catch(error) {
+        console.log("Error while searching for resources in database", error)
+        return res.status(501).send({
+            error : "Error while searching for resources in database"
+        })
+    }
 })
-app.get("/subject/:subject_name", async (req, res) => {
-    const subject_name = req.params.subject_name
-    res.render("subject", {
-        files : await resource_model.find({subject_name : subject_name})
-    })
+
+app.get("/resources/subject/:subject_name", async (req, res) => {
+    try {
+        const subject_name = req.params.subject_name
+        const subject_files = await resource_model.find({subject_name : subject_name})
+        return res.render("subject", {
+            subject_files : subject_files
+        })
+    }catch(error) {
+        console.log("Error while searching for subject files in database", error)
+        return res.status(501).send({
+            error : "Error while searching for subject files in database"
+        })
+    }
 })
-app.get("/subject/:subject_name/:file_id", async (req, res) => {
+
+app.get("/resources/subject/:subject_name/:file_id", async (req, res) => {
     const file_id = req.params.file_id
-    const resource = await resource_model.findOne({_id : file_id})
-    res.render("pdf", {
-        _id : resource._id,
-        subject_code : resource.subject_code,
-        subject_name : resource.subject_name,
-        file_name : resource.file_name,
-        description : resource.description,  
-    })
+    try {
+        const subject_file = await resource_model.findOne({_id : file_id})
+        return res.render("pdf", {
+            _id : subject_file._id,
+            subject_code : subject_file.subject_code,
+            subject_name : subject_file.subject_name,
+            file_name : subject_file.file_name,
+            description : subject_file.description,  
+        })
+    }catch(error) {
+        console.log("Error while searching for file in database", error)
+        return res.status(501).send({
+            error : "Error while searching for file in database"
+        })
+    }
 })
-app.get("/fetchfile/:_id", async (req, res) => {
-    const file_id = req.params._id
-    const resource = await resource_model.findOne({_id : file_id})
-    res.setHeader('Content-Type', 'application/pdf');
-    res.send(resource.filebuffer);
-})
-app.get("/fetch_pendingfile/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
-    const file_id = req.params.id
-    const resource = await pending_resource_model.findOne({_id : file_id})
-    res.setHeader('Content-Type', 'application/pdf');
-    res.send(resource.filebuffer);
-})
-app.get("/addContribution/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
-    const resource = await pending_resource_model.findOne({_id : req.params.id})
-    res.render("addContribution", {
-        resource : resource
-    })
-})
+
 app.get("/downloadfile/:_id", async (req, res) => {
     const file_id = req.params._id
-    const resource = await resource_model.findOne({_id : file_id})
-    res.setHeader('Content-Disposition', `attachment; filename="${resource.file_name}.pdf"`);
-    res.setHeader('Content-Type', 'application/pdf');
-    res.send(resource.filebuffer);
+    try {
+        const resource = await resource_model.findOne({_id : file_id})
+        res.setHeader('Content-Disposition', `attachment; filename="${resource.file_name}.pdf"`);
+        res.setHeader('Content-Type', 'application/pdf');
+        return res.send(resource.filebuffer);
+    }catch(error) {
+        console.log("Error while searching for file in database", error)
+        return res.status(501).send({
+            error : "Error while searching for file in database"
+        })
+    }
 
 })
-app.get("/download_pendingfile/:_id", async (req, res) => {
+
+app.get("/fetchfile/:_id", async (req, res) => {
     const file_id = req.params._id
-    const resource = await pending_resource_model.findOne({_id : file_id})
-    res.setHeader('Content-Disposition', `attachment; filename="${resource.file_name}.pdf"`);
-    res.setHeader('Content-Type', 'application/pdf');
-    res.send(resource.filebuffer);
+    try {
+        const resource = await resource_model.findOne({_id : file_id})
+        res.setHeader('Content-Type', 'application/pdf');
+        return res.send(resource.filebuffer);
+    }catch(error) {
+        console.log("Error while searching for file in database", error)
+        return res.status(501).send({
+            error : "Error while searching for file in database"
+        })
+    }
 })
+
+app.get("/download_pendingfile/:_id", auth_middleware.verifyToken, async (req, res) => {
+    const file_id = req.params._id
+    try {
+        const resource = await pending_resource_model.findOne({_id : file_id})
+        res.setHeader('Content-Disposition', `attachment; filename="${resource.file_name}.pdf"`);
+        res.setHeader('Content-Type', 'application/pdf');
+        return res.send(resource.filebuffer);
+    }catch(error) {
+        console.log("Error while searching for pending file in database", error)
+        return res.status(501).send({
+            error : "Error while searching for pending file in database"
+        })
+    }
+})
+
+app.get("/fetch_pendingfile/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
+    const file_id = req.params.id
+    try {
+        const resource = await pending_resource_model.findOne({_id : file_id})
+        res.setHeader('Content-Type', 'application/pdf');
+        return res.send(resource.filebuffer);
+    }catch(error) {
+        console.log("Error while searching for pending file in database", error)
+        return res.status(501).send({
+            error : "Error while searching for pending file in database"
+        })
+    }
+})
+
+app.get("/addContribution/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
+    try {
+        const pending_resource = await pending_resource_model.findOne({_id : req.params.id})
+        return res.render("addContribution", {
+            pending_resource : pending_resource
+        })
+    }catch(error) {
+        console.log("Error while loading contribution data", error)
+        return res.status(501).send({
+            error : "Error while loading contribution data"
+        })
+    }
+})
+
 app.get("/signup", async (req, res) => {
     return res.render("signup")
 })
+
 app.get("/login", async (req, res) => {
     return res.render("login")
 })
+
 app.get("/addResources", auth_middleware.verifyToken, async (req, res) => {
     return res.render("addResources")
 })
+
 app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
     const user = req.user
-    const pending_contributions = await pending_resource_model.find({contributerId : user._id})
-    const approved_contributions_ids = await approved_contributions_model.find({contributerId : user._id})
-    const approved_contributions = []
-    const promises = approved_contributions_ids.map(async approved_contribution => {
-        const approved_resource = await resource_model.findOne({ _id: approved_contribution.contributionId });
-        return approved_resource; 
-    });
-    
-    const results = await Promise.all(promises);
-    
-    approved_contributions.push(...results);
-    res.render("profile", {
-        user : req.user,
-        pending_contributions : pending_contributions,
-        approved_contributions : approved_contributions
-    })
+    try {
+        const pending_contributions = await pending_resource_model.find({contributerId : user._id})
+        const approved_contributions_ids = await approved_contributions_model.find({contributerId : user._id})
+        const approved_contributions = []
+        const promises = approved_contributions_ids.map(async approved_contribution => {
+            const approved_resource = await resource_model.findOne({ _id: approved_contribution.contributionId });
+            return approved_resource; 
+        });
+        
+        const results = await Promise.all(promises);
+        
+        approved_contributions.push(...results);
+        return res.render("profile", {
+            user : req.user,
+            pending_contributions : pending_contributions,
+            approved_contributions : approved_contributions
+        })
+    }catch(error) {
+        console.log("Error while fetching contributions from database", error)
+        return res.status(501).send({
+            error : "Error while fetching contributions from database"
+        })
+    }
 })
+
 require("./routes/resources.route")(app)
 require("./routes/auth.route")(app)
 app.listen(server_config.PORT, () => {

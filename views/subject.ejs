@@ -7,11 +7,11 @@
 </head>
 <body>
     <p>This is subject page</p>
-    <% files.forEach(file => { %>
-        <a href="<%= file.subject_name %>/<%= file._id %>">
+    <% subject_files.forEach(subject_file => { %>
+        <a href="<%= subject_file.subject_name %>/<%= subject_file._id %>">
             <div>
-                <h3><%= file.file_name %></h3>
-                <p><%= file.description %></p>
+                <h3><%= subject_file.file_name %></h3>
+                <p><%= subject_file.description %></p>
             </div> 
         </a>
     <% }) %>

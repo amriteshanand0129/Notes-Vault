@@ -1,35 +1,24 @@
-/**
- * A middleware to check if the authorisation requests' body is proper and correct
- */
-
 const user_model = require("../models/user.model")
 const jwt = require("jsonwebtoken")
 const auth_config = require("../configs/auth.config")
 
 const verifySignUpBody = async (req, res, next) => {
     try {
-
-        // Check for name
         if(!req.body.name) {
             return res.status(400).send({
                 message : "Failed! Name was not provided"
             })
         }
-
-        // Check for userID
         if(!req.body.userId) {
             return res.status(400).send({
                 message : "Failed! UserId was not provided"
             })
         }
-
         if(!req.body.password) {
             return res.status(400).send({
                 message : "Failed! UserId was not provided"
             })
         }
-
-        // Check for user with same userId is already present
         const user = await user_model.findOne({userId : req.body.userId})
         if(user) {
             return res.status(400).send({
@@ -41,8 +30,8 @@ const verifySignUpBody = async (req, res, next) => {
     }catch(err) {
         
         console.log("Error while validating request object", err)
-        res.status(500).send({
-            message : "Error while validating request body"
+        res.status(501).send({
+            error : "Error while validating request body"
         })
     }
 }
@@ -61,22 +50,32 @@ const verifySignInBody = async (req, res, next) => {
     next()
 }
 
+/**
+ * Checks if token is present, to decide which homepage to render
+ * Adds user data to request body if token found and is valid
+ */
 const findToken = (req, res, next) => {
     if(req.cookies?.token) {
         const token = req.cookies.token
         jwt.verify(token, auth_config.secret, async (err, decoded) => {
             if(err) {
-                console.log("Token Validation Failed")
                 return next()
             }
-            const user = await user_model.findOne({userId : decoded.id})
-            if(!user) {
-                return res.status(400).send({
-                    message : "Unauthorized, the user for this token does not exist"
+            try {
+                const user = await user_model.findOne({userId : decoded.id})
+                if(!user) {
+                    return res.status(401).send({
+                        error : "Unauthorized, the user for this token does not exist"
+                    })
+                }  
+                req.user = user
+                next()
+            }catch(error) {
+                console.log("Error while searching user in database", error)
+                res.status(501).send({
+                    error : "Error while searching user in database"
                 })
-            }  
-            req.user = user
-            next()
+            }
         })
     }
     else {
@@ -85,21 +84,27 @@ const findToken = (req, res, next) => {
 }
 
 const verifyToken = (req, res, next) => {
-
     if(req.cookies?.token) {
         const token = req.cookies.token
         jwt.verify(token, auth_config.secret, async (err, decoded) => {
             if(err) {
                 return res.redirect("/login")
             }
-            const user = await user_model.findOne({userId : decoded.id})
-            if(!user) {
-                return res.status(400).send({
-                    message : "Unauthorized, the user for this token does not exist"
+            try {
+                const user = await user_model.findOne({userId : decoded.id})
+                if(!user) {
+                    return res.status(400).send({
+                        message : "Unauthorized, the user for this token does not exist"
+                    })
+                }  
+                req.user = user
+                next()
+            }catch(error) {
+                console.log("Error while searching for user in database", error)
+                return res.status(501).send({
+                    error : "Error while searching for user in database"
                 })
-            }  
-            req.user = user
-            next()
+            }
         })
     }
     else {

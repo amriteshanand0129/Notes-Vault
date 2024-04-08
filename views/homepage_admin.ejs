@@ -16,8 +16,6 @@
     <a href="/addResources">Add Resources</a><br>
     <a href="/resources">Resources</a><br>
     <button onclick="logout()">Logout</button>
-
-
     <ol>
         <% pending_resources.forEach(resources => { %>
          <li>
@@ -29,7 +27,8 @@
                 <p>Description: <%= resources.description %> </p>
                 <iframe src="/fetch_pendingfile/<%= resources._id %>" frameborder="0"></iframe>
             </div>
-            <a href="/addContribution/<%= resources._id %>">Add this Contribution</a>
+            <a href="/addContribution/<%= resources._id %>">Accept</a>
+            <a href="/rejectContribution/<%= resources._id %>">Reject</a>
          </li>
         <% }) %>
     </ol>

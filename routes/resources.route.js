@@ -18,4 +18,5 @@ module.exports = (app) => {
     app.use(express.urlencoded({extended: false}))
     app.post("/upload", [upload.single("fileInput"), auth_middleware.verifyToken, addResources_Middleware.verifyUploadFile], addResources_Controller.addResource)
     app.post("/addContribution", [auth_middleware.verifyToken, auth_middleware.isAdmin, addResources_Middleware.verifyContribution], addResources_Controller.addContribution)
+    app.post("/deleteContribution", [auth_middleware.verifyToken, auth_middleware.isAdmin], addResources_Controller.deleteContribution)
 }
