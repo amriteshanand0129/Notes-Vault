@@ -1,6 +1,7 @@
 const resource_model = require("../models/resources.model")
 const pending_resource_model = require("../models/pending_resource.model")
 const approved_contributions_model = require("../models/approved_contributions")
+const rejected_contributions_model = require("../models/rejected_contribution.model")
 const path = require("path")
 const file = require("fs")
 
@@ -106,11 +107,37 @@ const addContribution = async (req, res) => {
     }
 }
 
-const deleteContribution = async (req, res) => {
+const rejectContribution = async (req, res) => {
     const user = req.user
+    try {
+        const file = await pending_resource_model.findOne({_id : req.body._id})
+        const created = await rejected_contributions_model.create({
+            contributerId : file.contributerId,
+            subject_code : file.subject_code,
+            subject_name : file.subject_name,
+            file_name : file.file_name,
+            description : file.description,
+            remarks : req.body.remarks
+        })
+        const result = await pending_resource_model.deleteOne({_id : req.body._id})
+        if(result.deletedCount == 1) {
+            console.log("Pending Contribution List Updated")
+        }
+        else {
+            console.log("Failed to update Pending Contribution List")
+        }
+        res.status(201).send({
+            message : "Contribution Rejected"
+        })
+    }catch(err) {
+        console.log("Error deleting resource", err)
+        res.status(401).send({
+            error : "Error deleting contribution resource"
+        })
+    }
 }
 module.exports = {
     addResource : addResource,
     addContribution : addContribution,
-    deleteContribution : deleteContribution
+    rejectContribution : rejectContribution
 }

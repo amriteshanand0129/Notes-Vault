@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reject Contribution</title>
+</head>
+<body>
+    <form action="/rejectContribution" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="contributedBy">Contributed By: </label>
+        <input type="text" id="contributedBy" name="contributedBy" value="<%= pending_resource.contributedBy %>" readonly><br><br>
+
+        <label for="_id">Resource Id: </label>
+        <input type="text" id="_id" name="_id" value="<%= pending_resource._id %>" readonly><br><br>
+
+        <label for="description">Remarks</label>
+        <input type="text" id="remarks" name="remarks"><br><br>
+        
+        <iframe src="/fetch_pendingfile/<%= pending_resource._id %>" frameborder="0"></iframe><br><br>
+        <input type="submit">
+    </form>
+</body>
+</html>

@@ -11,6 +11,7 @@ const user_model = require("./models/user.model")
 const resource_model = require("./models/resources.model")
 const pending_resource_model = require("./models/pending_resource.model")
 const approved_contributions_model = require("./models/approved_contributions")
+const rejected_contributions_model = require("./models/rejected_contribution.model")
 const auth_middleware = require("./middlewares/auth.middleware")
 
 const app = express()
@@ -199,6 +200,19 @@ app.get("/addContribution/:id", [auth_middleware.verifyToken, auth_middleware.is
     }
 })
 
+app.get("/rejectContribution/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
+    try {
+        const pending_resource = await pending_resource_model.findOne({_id : req.params.id})
+        return res.render("rejectContribution", {
+            pending_resource : pending_resource
+        })
+    }catch(error) {
+        console.log("Error while loading contribution data", error)
+        return res.status(501).send({
+            error : "Error while loading contribution data"
+        })
+    }
+})
 app.get("/signup", async (req, res) => {
     return res.render("signup")
 })
@@ -225,10 +239,13 @@ app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
         const results = await Promise.all(promises);
         
         approved_contributions.push(...results);
+
+        const rejected_contributions = await rejected_contributions_model.find({contributerId : user._id})
         return res.render("profile", {
             user : req.user,
             pending_contributions : pending_contributions,
-            approved_contributions : approved_contributions
+            approved_contributions : approved_contributions,
+            rejected_contributions : rejected_contributions
         })
     }catch(error) {
         console.log("Error while fetching contributions from database", error)
