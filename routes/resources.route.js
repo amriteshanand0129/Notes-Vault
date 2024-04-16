@@ -15,8 +15,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage : storage})
 
 module.exports = (app) => {
-    app.use(express.urlencoded({extended: false}))
     app.post("/upload", [upload.single("fileInput"), auth_middleware.verifyToken, addResources_Middleware.verifyUploadFile], addResources_Controller.addResource)
-    app.post("/addContribution", [auth_middleware.verifyToken, auth_middleware.isAdmin, addResources_Middleware.verifyContribution], addResources_Controller.addContribution)
-    app.post("/rejectContribution", [auth_middleware.verifyToken, auth_middleware.isAdmin], addResources_Controller.rejectContribution)
+    app.post("/addContribution", [upload.none(), auth_middleware.verifyToken, auth_middleware.isAdmin, addResources_Middleware.verifyContribution], addResources_Controller.addContribution)
+    app.post("/rejectContribution", [upload.none(), auth_middleware.verifyToken, auth_middleware.isAdmin], addResources_Controller.rejectContribution)
 }

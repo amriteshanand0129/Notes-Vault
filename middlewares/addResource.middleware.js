@@ -1,27 +1,32 @@
 const verifyUploadFile = (req, res, next) => {
     if(!req.file) {
         return res.status(401).send({
-            message : "File not selected"
+            error : "File not selected",
+            redirectTo : "/addResources"
         })
     }
     if(!req.body.subject_code || req.body.subject_code.length > 10) {
         return res.status(401).send({
-            message : "Invalid Subject Code"
+            error : "Invalid Subject Code",
+            redirectTo : "/addResources"
         })
     }
     if(!req.body.subject_name || req.body.subject_name.length > 50) {
         return res.status(401).send({
-            message : "Invalid Subject Name"
+            error : "Invalid Subject Name",
+            redirectTo : "/addResources"
         })
     }
     if(!req.body.file_name || req.body.file_name.length > 50) {
         return res.status(401).send({
-            message : "Invalid Subject Name"
+            error : "Invalid Subject Name",
+            redirectTo : "/addResources"
         })
     }
     if(!req.body.description || req.body.description.length > 100) {
         return res.status(401).send({
-            message : "Invalid Description"
+            error : "Invalid Description",
+            redirectTo : "/addResources"
         })
     }
     else
@@ -31,32 +36,38 @@ const verifyUploadFile = (req, res, next) => {
 const verifyContribution = (req, res, next) => {
     if(!req.body._id) {
         return res.status(401).send({
-            message : "File Id not available"
+            error : "File Id not available",
+            redirectTo : "/"
         })
     }
     if(!req.body.contributedBy) {
         return res.status(401).send({
-            message : "Contributor name not available"
+            error : "Contributor name not available",
+            redirectTo : "/"
         })
     }
     if(!req.body.subject_code || req.body.subject_code.length > 10) {
         return res.status(401).send({
-            message : "Invalid Subject Code"
+            error : "Invalid Subject Code",
+            redirectTo : "/"
         })
     }
     if(!req.body.subject_name || req.body.subject_name.length > 50) {
         return res.status(401).send({
-            message : "Invalid Subject Name"
+            error : "Invalid Subject Name",
+            redirectTo : "/"
         })
     }
     if(!req.body.file_name || req.body.file_name.length > 50) {
         return res.status(401).send({
-            message : "Invalid Subject Name"
+            error : "Invalid Subject Name",
+            redirectTo : "/"
         })
     }
     if(!req.body.description || req.body.description.length > 100) {
         return res.status(401).send({
-            message : "Invalid Description"
+            error : "Invalid Description",
+            redirectTo : "/"
         })
     }
     else

@@ -1,14 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resources</title>
+    <script src="script.js"></script>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .resources-outer {
+            width: 90%;
+            margin: auto;
+            margin-top: 50px;
+            text-align: center;
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 40px;
+        }
+
+        .subject {
+            border: 1px solid grey;
+            border-radius: 10px;
+            min-width: 25%;
+            padding: 20px;
+            margin: 20px;
+            display: inline-block;
+        }
+
+        a {
+            color: grey;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: black;
+        }
+    </style>
 </head>
+
 <body>
-    <p>This is resources page</p>
-    <% subjects.forEach(subject => { %>
-        <a href="resources/subject/<%= subject %>"><li><%= subject %></li></a>
-    <% }) %>
+    <nav class="navbar navbar-expand-lg border-bottom border-body" style="padding: 10px;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">EXAM NOTES</a>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav" style="margin-left: auto;">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact Us</a>
+                    </li>
+                    <% if (user !=undefined ) { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <%= user.name %>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <% if (user.userType=="ADMIN" ) { %>
+                                    <li>
+                                        <p class="dropdown-item disabled">ADMIN</p>
+                                    </li>
+                                    <% } else { %>
+                                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                        <% } %>
+                                            <li><a class="dropdown-item" onclick="logout()"
+                                                    style="cursor:pointer;">Logout</a></li>
+                            </ul>
+                        </li>
+                        <% } else { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/login">Login</a>
+                            </li>
+                            <% } %>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar bg-body-tertiary" style="padding: 10px 20px 10px 20px;">
+        <div class="container-fluid">
+            <ol class="breadcrumb" style="padding-top: 5px;">
+                <li class="breadcrumb-item" style="font-size: larger;"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" style="font-size: larger;" aria-current="/resources">Resources</li>
+            </ol>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <div class="resources-outer">
+        <h5>
+            <%= Object.keys(subjects).length %> Subjects Found
+        </h5>
+        <% subjects.forEach(subject=> { %>
+            <a href="resources/subject/<%= subject._id %>">
+                <div class="subject">
+                    <h5>
+                        <%= subject.subject_codes%>
+                    </h5>
+                    <h5>
+                        <%= subject._id %>
+                    </h5>
+                </div>
+            </a>
+            <% }) %>
+    </div>
 </body>
+
 </html>

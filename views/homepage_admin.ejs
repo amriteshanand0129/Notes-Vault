@@ -1,36 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin HomePage</title>
-    <script>
-        function logout() {
-            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            window.location.href = '/'; 
+    <title>HomePage</title>
+    <script src="script.js"></script>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        td {
+            padding: 10px;
+            font-size: large;
         }
-    </script>
+
+        iframe {
+            border-radius: 10px;
+            height: 300px;
+            width: 100%;
+        }
+
+        .pendingResources {
+            margin: 20px;
+            border: 1px solid grey;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card {
+            margin: 20px;
+            display: inline-block;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .resourceHeading {
+            color: grey;
+        }
+
+        .form-group {
+            margin: 10px;
+        }
+
+        label {
+            color: grey;
+            margin-bottom: 5px;
+        }
+
+        .card-footer {
+            text-align: center;
+        }
+        .inner-heading {
+            border-bottom: 1px solid rgb(175, 175, 175);
+        }
+    </style>
 </head>
+
 <body>
-    <h2>Hello ADMIN <%= user.name %></h2>
-    <a href="/addResources">Add Resources</a><br>
-    <a href="/resources">Resources</a><br>
-    <button onclick="logout()">Logout</button>
-    <ol>
-        <% pending_resources.forEach(resources => { %>
-         <li>
-            <div>
-                <h4>Contributed by: <%= resources.contributedBy %> </h4>
-                <h5>Subject Code: <%= resources.subject_code %> </h5>
-                <h5>Subject Name: <%= resources.subject_name %> </h5>
-                <p>File Name: <%= resources.file_name %> </p>
-                <p>Description: <%= resources.description %> </p>
-                <iframe src="/fetch_pendingfile/<%= resources._id %>" frameborder="0"></iframe>
+
+    <nav class="navbar navbar-expand-lg border-bottom border-body" style="padding: 10px;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">EXAM NOTES</a>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav" style="margin-left: auto;">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources">Resources</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <%= user.name %>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <p class="dropdown-item disabled">ADMIN</p>
+                            </li>
+                            <li><a class="dropdown-item" onclick="logout()" style="cursor:pointer;">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
-            <a href="/addContribution/<%= resources._id %>">Accept</a>
-            <a href="/rejectContribution/<%= resources._id %>">Reject</a>
-         </li>
-        <% }) %>
-    </ol>
+        </div>
+    </nav>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
+        style="display: none; text-align: center;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
+        style="display: none; text-align: center;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
+        style="display: none; text-align: center;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <a href="/resources">Resources</a><br>
+    <a href="/addResources">Add Resources</a><br>
+    
+            <div class="pendingResources">
+                <div class="inner-heading">
+                    <h3>Pending Contributions</h3>
+                <h5><%= Object.keys(pending_resources).length %> Contributions Pending for Authorization</h5>
+                </div>
+                <% pending_resources.forEach(resources=> { %>
+                    <div class="card" style="width: 25rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= resources.subject_code %>
+                            </h5>
+                            <p class="card-text">
+                                <%= resources.subject_name%>
+                            </p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <span class="resourceHeading">File Name: </span>
+                                <%= resources.file_name %>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="resourceHeading">Description: </span>
+                                <%= resources.description %>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="resourceHeading">Contributed By: </span>
+                                <%= resources.contributedBy %>
+                            </li>
+                        </ul>
+                        <iframe src="/fetch_pendingfile/<%= resources._id %>" frameborder="0"></iframe>
+
+                        <div class="modal fade" id="myModal<%= resources._id %>" tabindex="-1" role="dialog"
+                            aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Accept Contribution</h5>
+                                        <button type="button" class="btn-close" data-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="acceptContributionForm" action="/addContribution" method="post"
+                                            enctype="application/x-www-form-urlencoded">
+                                            <div class="form-group">
+                                                <label for="contributedBy">Contributed By</label><br>
+                                                <input type="text" class="form-control" id="contributedBy"
+                                                    name="contributedBy" value="<%= resources.contributedBy %>"
+                                                    style="cursor: default;" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="_id">Resource Id</label>
+                                                <input type="text" class="form-control" id="_id" name="_id"
+                                                    value="<%= resources._id %>" style="cursor: default;" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="subject_code">Subject Code</label>
+                                                <input type="text" class="form-control" id="subject_code"
+                                                    name="subject_code" value="<%= resources.subject_code %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="subject_name">Subject Name</label>
+                                                <input type="text" class="form-control" id="subject_name"
+                                                    name="subject_name" value="<%= resources.subject_name %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="file_name">File Name</label>
+                                                <input type="text" class="form-control" id="file_name" name="file_name"
+                                                    value="<%= resources.file_name %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="description">Description</label>
+                                                <input type="text" class="form-control" id="description"
+                                                    name="description" value="<%= resources.description %>">
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Accept</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="myModalReject<%= resources._id %>" tabindex="-1" role="dialog"
+                            aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Reject Contribution</h5>
+                                        <button type="button" class="btn-close" data-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="rejectContributionForm" action="/rejectContribution" method="post"
+                                            enctype="application/x-www-form-urlencoded">
+                                            <div class="form-group">
+                                                <label for="contributedBy">Contributed By</label><br>
+                                                <input type="text" class="form-control" id="contributedBy"
+                                                    name="contributedBy" value="<%= resources.contributedBy %>"
+                                                    style="cursor: default;" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="_id">Resource Id</label>
+                                                <input type="text" class="form-control" id="_id" name="_id"
+                                                    value="<%= resources._id %>" style="cursor: default;" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="remarks">Remarks</label>
+                                                <input type="text" class="form-control" id="remarks" name="remarks" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-danger">Reject</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-outline-success" data-toggle="modal"
+                                data-target="#myModal<%= resources._id %>">
+                                Accept Contribution
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" data-toggle="modal"
+                                data-target="#myModalReject<%= resources._id %>">
+                                Reject Contribution
+                            </button>
+                            <div class="card-body">
+                                <a href="/download_pendingfile/<%= resources._id %>" download="filename"><button
+                                        type="button" class="btn btn-outline-info">Download File</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+                <script>
+                    const message = sessionStorage.getItem('message');
+                    if (message) {
+                        document.getElementById('message').style.display = "block";
+                        document.getElementById('message').textContent = message;
+                        sessionStorage.removeItem('message');
+                    }
+                    const warning = sessionStorage.getItem('warning');
+                    if (warning) {
+                        document.getElementById('warning').style.display = "block";
+                        document.getElementById('warning').textContent = warning;
+                        sessionStorage.removeItem('warning');
+                    }
+                    const error = sessionStorage.getItem('error');
+                    if (error) {
+                        document.getElementById('error').style.display = "block";
+                        document.getElementById('error').textContent = error;
+                        sessionStorage.removeItem('error');
+                    }
+                    async function addResources() {
+                        try {
+                            const response = await fetch("/addResources")
+                            const data = await response.json()
+                            if (!response.ok) {
+                                sessionStorage.setItem('warning', data.warning);
+                                window.location.href = data.redirectTo
+                            }
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                    document.getElementById("acceptContributionForm").addEventListener("submit", async function (event) {
+                        event.preventDefault();
+                        const formData = new FormData(event.target)
+                        try {
+                            const response = await fetch("/addContribution", {
+                                method: "POST",
+                                body: formData
+                            })
+                            if (response.ok) {
+                                const data = await response.json()
+                                sessionStorage.setItem("message", data.message)
+                                window.location.href = data.redirectTo;
+                            }
+                            else {
+                                const data = await response.json()
+                                window.location.href = data.redirectTo
+                                sessionStorage.setItem('error', data.error);
+                            }
+                        } catch (error) {
+                            window.location.href = data.redirectTo
+                            sessionStorage.setItem('error', "Error while sending request");
+                            console.log(error)
+                        }
+                    })
+                    document.getElementById("rejectContributionForm").addEventListener("submit", async function (event) {
+                        event.preventDefault();
+                        const formData = new FormData(event.target)
+                        try {
+                            const response = await fetch("/rejectContribution", {
+                                method: "POST",
+                                body: formData
+                            })
+                            if (response.ok) {
+                                const data = await response.json()
+                                sessionStorage.setItem("message", data.message)
+                                window.location.href = data.redirectTo;
+                            }
+                            else {
+                                const data = await response.json()
+                                window.location.href = data.redirectTo
+                                sessionStorage.setItem('error', data.error);
+                            }
+                        } catch (error) {
+                            window.location.href = data.redirectTo
+                            sessionStorage.setItem('error', "Error while sending request");
+                            console.log(error)
+                        }
+                    })
+                    $(document).ready(function () {
+                        window.setTimeout(function () {
+                            $(".alert").alert('close');
+                        }, 4000);
+                    });
+                </script>
+
 </body>
+
 </html>

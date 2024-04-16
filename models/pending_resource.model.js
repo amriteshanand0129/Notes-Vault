@@ -27,7 +27,6 @@ const pending_resourcesSchema = mongoose.Schema({
     file_name : {
         type : String,
         required : true,
-        unique : true,
         trim : true,
         maxlength : 50
     },

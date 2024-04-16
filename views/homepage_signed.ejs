@@ -1,22 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomePage Signed</title>
-    <script>
-        function logout() {
-            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            window.location.href = '/'; 
-        }
-    </script>
+    <script src="script.js"></script>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
+
 <body>
-    <p>This is homepage after signin</p>
-    <p>Hello <%= user.name %> </p>
+
+    <nav class="navbar navbar-expand-lg border-bottom border-body" style="padding: 10px;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">EXAM NOTES</a>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav" style="margin-left: auto;">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                             <%= user.name %>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                            <li><a class="dropdown-item" onclick="logout()" style="cursor:pointer;">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
+        style="display: none; text-align: center; width: 80%; margin: auto;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
+        style="display: none; text-align: center; width: 80%; margin: auto;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
+        style="display: none; text-align: center; width: 80%; margin: auto;">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <a href="/resources">Resources</a><br>
-    <a href="/addResources">Add Resources</a><br>
-    <a href="/profile">View Profile</a>
-    <button onclick="logout()">Logout</button>
+    <a href="/addResources">Contribute</a>    
+
+    <script>
+        const message = sessionStorage.getItem('message');
+        if (message) {
+            document.getElementById('message').style.display = "block";
+            document.getElementById('message').textContent = message;
+            sessionStorage.removeItem('message');
+        }
+        const warning = sessionStorage.getItem('warning');
+        if (warning) {
+            document.getElementById('warning').style.display = "block";
+            document.getElementById('warning').textContent = warning;
+            sessionStorage.removeItem('warning');
+        }
+        const error = sessionStorage.getItem('error');
+        if (error) {
+            document.getElementById('error').style.display = "block";
+            document.getElementById('error').textContent = error;
+            sessionStorage.removeItem('error');
+        }
+        async function addResources() {
+            try {
+                const response = await fetch("/addResources")
+                if (response.ok) {
+                    const data = await response.json()
+                    window.location.href = data.redirectTo;
+                }
+                else {
+                    const data = await response.json()
+                    sessionStorage.setItem('warning', data.warning);
+                    window.location.href = data.redirectTo
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        $(document).ready(function () {
+            window.setTimeout(function () {
+                $(".alert").alert('close');
+            }, 4000);
+        });
+    </script>
 </body>
+
 </html>

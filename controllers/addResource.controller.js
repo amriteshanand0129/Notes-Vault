@@ -19,13 +19,15 @@ const addResource = async (req, res) => {
                 filebuffer : pdfbuffer
             })
             console.log("File added to database", created)
-            res.status(201).send({
-                message : "File Added Successfully",
+            res.status(201).json({
+                message : "Resource Added Successfully",
+                redirectTo : "/addResources"
             })
         }catch(err) {
             console.log("Error adding resource", err)
             res.status(401).send({
-                error : "Error adding resource"
+                error : "Error adding resource",
+                redirectTo : "/addResources"
             })
         }finally {
             file.unlink(filepath, function (err) {
@@ -50,12 +52,14 @@ const addResource = async (req, res) => {
             })
             console.log("File added to database", created)
             res.status(201).send({
-                message : "File Uploaded Successfully",
+                message : "Thanks for Your Contribution! You can check your contribution status in Profile Tab",
+                redirectTo : "/"
             })
         }catch(err) {
-            console.log("Error while adding contribution", err)
+            console.log("Error while uploading contribution", err)
             res.status(401).send({
-                error : "Error while adding contribution"
+                error : "Error while uploading contribution",
+                redirectTo : "/addResources"
             })
         }finally {
             file.unlink(filepath, function (err) {
@@ -97,12 +101,14 @@ const addContribution = async (req, res) => {
         }
         console.log("File added to database", created)
         res.status(201).send({
-            message : "File Added Successfully",
+            message : "Resource Added Successfully",
+            redirectTo : "/"
         })
     }catch(err) {
-        console.log("Error adding resource", err)
+        console.log("Error adding contribution resource", err)
         res.status(401).send({
-            error : "Error adding contribution resource"
+            error : "Error adding contribution resource",
+            redirectTo : "/"
         })
     }
 }
@@ -127,12 +133,14 @@ const rejectContribution = async (req, res) => {
             console.log("Failed to update Pending Contribution List")
         }
         res.status(201).send({
-            message : "Contribution Rejected"
+            message : "Contribution Rejected",
+            redirectTo : "/"
         })
     }catch(err) {
         console.log("Error deleting resource", err)
         res.status(401).send({
-            error : "Error deleting contribution resource"
+            error : "Error deleting contribution resource",
+            redirectTo : "/"
         })
     }
 }
