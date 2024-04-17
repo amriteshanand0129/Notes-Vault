@@ -55,27 +55,29 @@ app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
 app.get("/", auth_middleware.findToken, async (req, res) => {
-  if (req.user) {
-    if (req.user.userType == "CUSTOMER") {
-      return res.render("homepage_signed", {
+  if (req.user && req.user.userType == "ADMIN") {
+    try {
+      const pending_resources = await pending_resource_model.find();
+      return res.render("homepage_admin", {
         user: req.user,
+        pending_resources: pending_resources,
       });
-    } else if (req.user.userType == "ADMIN") {
-      try {
-        const pending_resources = await pending_resource_model.find();
-        return res.render("homepage_admin", {
-          user: req.user,
-          pending_resources: pending_resources,
-        });
-      } catch (error) {
-        console.log(error);
-        return res.status(501).send({
-          error: "Error while searching pending contributions in database",
-        });
-      }
-    }
+    } catch (error) {
+      console.log(error);
+      return res.status(501).send({
+        error: "Error while searching pending contributions in database",
+      });
   }
-  return res.render("homepage");
+}
+  else {
+    let user = undefined;
+    if(req.user) {
+      user = req.user
+    }
+      return res.render("homepage", {
+        user: user,
+      });
+    }
 });
 
 app.get("/resources", auth_middleware.findToken, async (req, res) => {
@@ -233,11 +235,16 @@ app.get("/login", async (req, res) => {
   return res.render("login");
 });
 
+app.get("/addResource", auth_middleware.verifyToken, async(req, res) => {
+  res.render("addResources", {
+    user : req.user
+  })
+})
 app.get("/addResources", auth_middleware.verifyToken, async (req, res) => {
   const user = req.user;
-  return res.render("addResources", {
-    user: user,
-  });
+  return res.send({
+    redirectTo : "addResource"
+  })
 });
 
 app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {

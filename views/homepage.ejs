@@ -9,6 +9,16 @@
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .content {
+            margin: 5%;
+            width: 60%;
+            border-radius: 10px;
+            height:500px;
+            background-image: url("Home.png");
+            background-size: cover;
+        }
+    </style>
 </head>
 
 <body>
@@ -27,13 +37,31 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact Us</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
+                    <% if (user !=undefined ) { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <%= user.name %>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <% if (user.userType=="CUSTOMER" ) { %>
+                                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                    <li><a class="dropdown-item" onclick="logout()" style="cursor:pointer;">Logout</a>
+                                    </li>
+                                    <% } %>
+                            </ul>
+                        </li>
+                        <% } else { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/login">Login</a>
+                            </li>
+                            <% } %>
+
                 </ul>
             </div>
         </div>
     </nav>
+    
     <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
         style="display: none; text-align: center; width: 80%; margin: auto;">
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -47,10 +75,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    
+    <div class="content">
     <a href="/resources">Resources</a><br>
     <button onclick="addResources()">Contribute</button>
 
+    </div>
     <script>
         const message = sessionStorage.getItem('message');
         if (message) {
@@ -76,8 +105,20 @@
             }, 4000);
         });
         async function addResources() {
-            window.location.href = "/login"
-            sessionStorage.setItem('warning', "You must be logged in")
+            try {
+                const response = await fetch("/addResources")
+                if (response.ok) {
+                    const data = await response.json()
+                    window.location.href = data.redirectTo;
+                }
+                else {
+                    const data = await response.json()
+                    sessionStorage.setItem('warning', data.warning);
+                    window.location.href = data.redirectTo
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     </script>
 </body>
