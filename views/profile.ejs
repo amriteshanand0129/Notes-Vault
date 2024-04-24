@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,95 @@
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .heading {
+            color: grey;
+        }
+
+        .pendingContributionsOuter {
+            margin: 20px;
+        }
+        .pendingContributionsInner {
+            width: 50%;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid grey;
+            border-radius: 10px;
+            padding: 30px;
+            font-size: large;
+            line-height: 40px;
+        }
+        .pendingContributionsInner:hover {
+            border: 1px solid black;
+        }
+
+        .status {
+            border-radius: 10px;
+            float: right;
+        }
+        .pendingStatus {
+            border-radius: 10px;
+            background-color: rgba(255, 255, 0, 0.7);
+            padding: 10px 20px;
+        }
+        .approvedStatus {
+            border-radius: 10px;
+            padding: 10px 20px;
+            background-color: rgba(127, 255, 0, 0.7);
+        }
+        .rejectedStatus {
+            border-radius: 10px;
+            padding: 10px 20px;
+            background-color: rgba(127, 0, 0, 0.7);
+        }
+
+        .approvedContributionsOuter {
+            margin: 20px;
+        }
+        .approvedContributionsInner {
+            width: 50%;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid grey;
+            border-radius: 10px;
+            padding: 30px;
+            font-size: large;
+            line-height: 40px;
+
+        }
+        .approvedContributionsInner:hover {
+            border: 1px solid black;
+        }
+
+        .rejectedContributionsOuter {
+            margin: 20px;
+        }
+        .rejectedContributionsInner {
+            width: 50%;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid grey;
+            border-radius: 10px;
+            padding: 30px;
+            font-size: large;
+            line-height: 40px;
+        }
+        .rejectedContributionsInner:hover {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        function logout() {
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    sessionStorage.setItem('warning', "Logged Out Succesfully")
+    window.location.href = '/'; 
+}
+    </script>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg border-bottom border-body" style="padding: 10px;">
         <div class="container-fluid">
@@ -27,7 +116,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                             <%= user.name %>
+                            <%= user.name %>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item active" href="/profile">Profile</a></li>
@@ -38,36 +127,97 @@
             </div>
         </div>
     </nav>
-    <h2>Hello <%= user.name %></h2>
-    <h3>Pending Contributions</h3> 
-    <% pending_contributions.forEach(pending_contribution => { %>
-        <div>
-            <h4><%= pending_contribution.subject_code %></h4>
-            <h4><%= pending_contribution.subject_name %></h4>
-            <h4><%= pending_contribution.file_name %></h4>
-            <h4><%= pending_contribution.description %></h4>
-            <a href="/download_pendingfile/<%= pending_contribution._id %>" download="filename">Download File</a>
-        </div>
-    <% }) %>
-    <h3>Approved Contributions</h3>
-    <% approved_contributions.forEach(approved_contribution => { %>
-        <div>
-            <h4><%= approved_contribution.subject_code %></h4>
-            <h4><%= approved_contribution.subject_name %></h4>
-            <h4><%= approved_contribution.file_name %></h4>
-            <h4><%= approved_contribution.description %></h4>
-            <a href="/downloadfile/<%= approved_contribution._id %>" download="filename">Download File</a>
-        </div>
-    <% }) %>
-    <h3>Rejected Contributions</h3>
-    <% rejected_contributions.forEach(rejected_contribution => { %>
-        <div>
-            <h4><%= rejected_contribution.subject_code %></h4>
-            <h4><%= rejected_contribution.subject_name %></h4>
-            <h4><%= rejected_contribution.file_name %></h4>
-            <h4><%= rejected_contribution.description %></h4>
-            <h4><%= rejected_contribution.remarks %></h4>
-        </div>
-    <% }) %>
+    <h2>Hello <%= user.name %>
+    </h2>
+    <div class="pendingContributionsOuter">
+        <% pending_contributions.forEach(pending_contribution=> { %>
+            <div class="pendingContributionsInner">
+                <div class="status">
+                    Status: <span class="pendingStatus">Pending</span>
+                </div>
+                <span class="heading">Subject Code: </span>
+                <%= pending_contribution.subject_code %>
+                <br>
+                <span class="heading">Subject Name: </span>
+                <%= pending_contribution.subject_name %>
+                <br>
+                <span class="heading">File Name: </span>
+                <%= pending_contribution.file_name %>
+                <br>
+                <span class="heading">Description:</span>
+                <%= pending_contribution.description %>
+                <br>
+                <span class="heading">Uploaded On:</span>
+                <%= (new Date(pending_contribution.createdAt)).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                }) %>
+                <br>
+                <a href="/download_pendingfile/<%= pending_contribution._id %>"
+                    download="filename"><button type="button" class="btn btn-outline-info">Download
+                        File</button></a>
+
+            </div>
+        <% }) %>
+    </div>
+    <div class="approvedContributionsOuter">
+        <% approved_contributions.forEach(approved_contribution=> { %>
+            <div class="approvedContributionsInner">
+                <div class="status">
+                    Status: <span class="approvedStatus">Approved</span> 
+                </div>
+                <span class="heading">Subject Code: </span>
+                    <%= approved_contribution.subject_code %>
+                <br>
+                <span class="heading">Subject Name: </span>
+                    <%= approved_contribution.subject_name %>
+                <br>
+                <span class="heading">File Name: </span>
+                    <%= approved_contribution.file_name %>
+                <br>
+                <span class="heading">Description:</span>
+                    <%= approved_contribution.description %>
+                <br>
+                <span class="heading">Uploaded On:</span>
+                <%= (new Date(approved_contribution.uploadedOn)).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                }) %>
+                <br>
+                <span class="heading">Approved On:</span>
+                <%= (new Date(approved_contribution.createdAt)).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                }) %>
+                <br>
+                <a href="/downloadfile/<%= approved_contribution._id %>"
+                    download="filename"><button type="button" class="btn btn-outline-info">Download
+                        File</button></a>
+            </div>
+            <% }) %>
+    </div>
+    <div class="rejectedContributionsOuter">
+        <% rejected_contributions.forEach(rejected_contribution=> { %>
+            <div class="rejectedContributionsInner">
+                <div class="status">
+                    Status: <span class="rejectedStatus">Rejected</span>
+                </div>
+                <span class="heading">Subject Code: </span>
+                    <%= rejected_contribution.subject_code %>
+                <br>
+                <span class="heading">Subject Name: </span>
+                    <%= rejected_contribution.subject_name %>
+                <br>
+                <span class="heading">File Name: </span>
+                    <%= rejected_contribution.file_name %>
+                <br>
+                <span class="heading">Description:</span>
+                    <%= rejected_contribution.description %>
+                <br>
+                <span class="heading">Uploaded On:</span>                    
+                </h4>
+                <br>
+                <span class="heading">Reason:</span>
+                    <%= rejected_contribution.remarks %>
+            </div>
+            <% }) %>
+    </div>        
 </body>
 </html>

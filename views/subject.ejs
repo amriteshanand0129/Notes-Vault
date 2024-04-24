@@ -5,10 +5,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject</title>
-    <script src="script.js"></script>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function logout() {
+            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            sessionStorage.setItem('warning', "Logged Out Succesfully")
+            window.location.href = '/';
+        }
+    </script>
+    <style>
+        a {
+            color: grey;
+            text-decoration: none;
+        }
+
+        .content {
+            width: 90%;
+            margin: auto;
+            margin-top: 50px;
+            text-align: center;
+            border: 1px solid grey;
+            border-radius: 10px;
+            padding: 40px;
+        }
+
+        .subject_file {
+            margin: 20px;
+            border: 1px solid grey;
+            border-radius: 10px;
+            min-width: 25%;
+            display: inline-block;
+        }
+
+        .subject_file:hover {
+            border: 1px solid black;
+            color: black;
+        }
+
+        .subject_file_content {
+            padding-top: 15px;
+
+        }
+
+        .subject_file_footer {
+            padding-left: 10px;
+            padding-right: 10px
+        }
+    </style>
 </head>
 
 <body>
@@ -54,18 +99,62 @@
             </div>
         </div>
     </nav>
-    <% subject_files.forEach(subject_file=> { %>
-        <a href="<%= subject_file.subject_name %>/<%= subject_file._id %>">
-            <div>
-                <h3>
-                    <%= subject_file.file_name %>
-                </h3>
-                <p>
-                    <%= subject_file.description %>
-                </p>
-            </div>
-        </a>
-        <% }) %>
+    <nav class="navbar bg-body-tertiary" style="padding: 10px 20px 10px 20px;">
+        <div class="container-fluid">
+            <ol class="breadcrumb" style="padding-top: 5px;">
+                <li class="breadcrumb-item" style="font-size: larger;"><a href="/">Home</a></li>
+                <li class="breadcrumb-item" style="font-size: larger;"><a href="/resources">Resources</a></li>
+                <li class="breadcrumb-item active" style="font-size: larger;"
+                    aria-current="/resources/subject/<%= subject_name %>">
+                    <%= subject_name %>
+                </li>
+            </ol>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <div class="content">
+        <% subject_files.forEach(subject_file=> { %>
+            <a href="<%= subject_file.subject_name %>/<%= subject_file._id %>">
+                <% if (subject_file.contributedBy) { %>
+                    <div class="subject_file">
+                        <div class="subject_file_content">
+                            <p>
+                                <%= subject_file.file_name %>
+                            </p>
+                            <p>
+                                <%= subject_file.description %>
+                            </p>
+                            <p>
+                                <%= subject_file.filesize %>
+                            </p>
+                        </div>
+                        <div class="subject_file_footer">
+                            <p>Contributed By: <%= subject_file.contributedBy %>
+                            </p>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <div class="subject_file">
+                            <div class="subject_file_content">
+                                <p>
+                                    <%= subject_file.file_name %>
+                                </p>
+                                <p>
+                                    <%= subject_file.description %>
+                                </p>
+                                <p>
+                                    <%= subject_file.filesize %>
+                                </p>
+
+                            </div>
+                        </div>
+                        <% } %>
+            </a>
+            <% }) %>
+    </div>
 </body>
 
 </html>

@@ -39,6 +39,10 @@ const pending_resourcesSchema = mongoose.Schema({
     filebuffer : {
         type : Buffer,
         required : true
+    },
+    filesize : {
+        type : String,
+        required : true
     }
 }, {timestamps : true, versionKey : false})
 

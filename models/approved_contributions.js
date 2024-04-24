@@ -8,7 +8,11 @@ const approved_contributionsSchema = mongoose.Schema({
     contributionId : {
         type : Object,
         required : true
+    },
+    uploadedOn : {
+        type : Date,
+        required : true
     }
-}, {versionKey : false})
+}, {timestamp: true, versionKey : false})
 
 module.exports = mongoose.model("Approved Contributions", approved_contributionsSchema)

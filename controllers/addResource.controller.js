@@ -7,6 +7,17 @@ const file = require("fs")
 
 const addResource = async (req, res) => {
     const filepath = req.file.path
+    const filesize = req.file.size
+    let filesize_String = filesize
+    if(filesize < 1024) {
+        filesize_String = Math.floor(filesize) + " B";
+    }
+    else if(filesize < 1048576) {
+        filesize_String = Math.floor(filesize / 1024) + " KB";
+    }
+    else {
+        filesize_String = Math.floor(filesize / 1048576) + " MB";
+    }
     const user = req.user
     if(user.userType == "ADMIN") {
         try {
@@ -16,18 +27,19 @@ const addResource = async (req, res) => {
                 subject_name : req.body.subject_name,
                 file_name : req.body.file_name,
                 description : req.body.description,
-                filebuffer : pdfbuffer
+                filebuffer : pdfbuffer,
+                filesize : filesize_String
             })
             console.log("File added to database", created)
             res.status(201).json({
                 message : "Resource Added Successfully",
-                redirectTo : "/addResources"
+                redirectTo : "/addResource"
             })
         }catch(err) {
             console.log("Error adding resource", err)
             res.status(401).send({
                 error : "Error adding resource",
-                redirectTo : "/addResources"
+                redirectTo : "/addResource"
             })
         }finally {
             file.unlink(filepath, function (err) {
@@ -48,7 +60,8 @@ const addResource = async (req, res) => {
                 subject_name : req.body.subject_name,
                 file_name : req.body.file_name,
                 description : req.body.description,
-                filebuffer : pdfbuffer
+                filebuffer : pdfbuffer,
+                filesize : filesize_String
             })
             console.log("File added to database", created)
             res.status(201).send({
@@ -78,16 +91,19 @@ const addContribution = async (req, res) => {
         const file = await pending_resource_model.findOne({_id : req.body._id})
         const created = await resource_model.create({
             contributerId : file.contributerId,
+            contributedBy : file.contributedBy,
             subject_code : req.body.subject_code,
             subject_name : req.body.subject_name,
             file_name : req.body.file_name,
             description : req.body.description,
-            filebuffer : file.filebuffer
+            filebuffer : file.filebuffer,
+            filesize : file.filesize
         })
         try {
             const result = await approved_contributions_model.create({
                 contributerId : created.contributerId,
-                contributionId : created._id 
+                contributionId : created._id,
+                uploadedOn : file.createdAt
             })
         }catch(err) {
             console.log("Error while updating Approved Contributions list")

@@ -22,7 +22,8 @@ app.use(express.static("public"));
 app.use("/bootstrap", express.static(path.join(__dirname, "node_modules/bootstrap/dist")));
 app.use(express.static("images"));
 
-mongoose.connect(db_config.DB_URL);
+// mongoose.connect(db_config.DB_URL);
+mongoose.connect('mongodb+srv://amritesh2901:AMRishu*9215@cluster0.rl1dmlv.mongodb.net/?retryWrites=true&w=majority');
 const db = mongoose.connection;
 
 db.on("error", () => {
@@ -115,8 +116,9 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
       user = req.user;
     }
     return res.render("subject", {
+      subject_name: subject_name,
       subject_files: subject_files,
-      user : user
+      user: user
     });
   } catch (error) {
     console.log("Error while searching for subject files in database", error);
@@ -126,16 +128,22 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
   }
 });
 
-app.get("/resources/subject/:subject_name/:file_id", async (req, res) => {
+app.get("/resources/subject/:subject_name/:file_id", auth_middleware.findToken, async (req, res) => {
   const file_id = req.params.file_id;
+  let user = undefined;
+    if (req.user) {
+      user = req.user;
+    }
   try {
     const subject_file = await resource_model.findOne({ _id: file_id });
     return res.render("pdf", {
+      user: user,
       _id: subject_file._id,
       subject_code: subject_file.subject_code,
       subject_name: subject_file.subject_name,
       file_name: subject_file.file_name,
       description: subject_file.description,
+      filesize: subject_file.filesize
     });
   } catch (error) {
     console.log("Error while searching for file in database", error);

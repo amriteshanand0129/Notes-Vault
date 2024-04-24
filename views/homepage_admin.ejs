@@ -101,7 +101,7 @@
     </div>
 
     <a href="/resources">Resources</a><br>
-    <a href="/addResources">Add Resources</a><br>
+    <button onclick="addResources()">Add Resource</button>
     
             <div class="pendingResources">
                 <div class="inner-heading">
@@ -130,6 +130,16 @@
                             <li class="list-group-item">
                                 <span class="resourceHeading">Contributed By: </span>
                                 <%= resources.contributedBy %>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="resourceHeading">File Size: </span>
+                                <%= resources.filesize %>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="resourceHeading">Contributed On:</span>
+                                <%= (new Date(resources.createdAt)).toLocaleDateString('en-US', {
+                                    year: 'numeric', month: 'long', day: 'numeric'
+                                }) %>
                             </li>
                         </ul>
                         <iframe src="/fetch_pendingfile/<%= resources._id %>" frameborder="0"></iframe>
@@ -322,6 +332,22 @@
                             $(".alert").alert('close');
                         }, 4000);
                     });
+                    async function addResources() {
+            try {
+                const response = await fetch("/addResources")
+                if (response.ok) {
+                    const data = await response.json()
+                    window.location.href = data.redirectTo;
+                }
+                else {
+                    const data = await response.json()
+                    sessionStorage.setItem('warning', data.warning);
+                    window.location.href = data.redirectTo
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
                 </script>
 
 </body>

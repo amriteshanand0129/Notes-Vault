@@ -3,7 +3,11 @@ const mongoose = require("mongoose")
 const resourcesSchema = mongoose.Schema({
     contributerId : {
         type : Object,
-        trim : true,
+        trim : true
+    },
+    contributedBy : {
+        type : String,
+        trim : true
     },
     subject_code : {
         type : String,
@@ -32,6 +36,10 @@ const resourcesSchema = mongoose.Schema({
     },
     filebuffer : {
         type : Buffer,
+        required : true
+    },
+    filesize : {
+        type : String,
         required : true
     }
 }, {timestamps : true, versionKey : false})
