@@ -18,12 +18,12 @@ const app = express();
 app.use(cookie_parser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static("public"));
+app.use("/js", express.static("public"));
+app.use("/images", express.static("images"));
 app.use("/bootstrap", express.static(path.join(__dirname, "node_modules/bootstrap/dist")));
-app.use(express.static("images"));
 
-// mongoose.connect(db_config.DB_URL);
-mongoose.connect('mongodb+srv://amritesh2901:AMRishu*9215@cluster0.rl1dmlv.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect(db_config.DB_URL);
+// mongoose.connect('mongodb+srv://amritesh2901:AMRishu*9215@cluster0.rl1dmlv.mongodb.net/?retryWrites=true&w=majority');
 const db = mongoose.connection;
 
 db.on("error", () => {

@@ -30,7 +30,7 @@ const addResource = async (req, res) => {
                 filebuffer : pdfbuffer,
                 filesize : filesize_String
             })
-            console.log("File added to database", created)
+            console.log("File added to database")
             res.status(201).json({
                 message : "Resource Added Successfully",
                 redirectTo : "/addResource"
@@ -63,7 +63,7 @@ const addResource = async (req, res) => {
                 filebuffer : pdfbuffer,
                 filesize : filesize_String
             })
-            console.log("File added to database", created)
+            console.log("File added to database")
             res.status(201).send({
                 message : "Thanks for Your Contribution! You can check your contribution status in Profile Tab",
                 redirectTo : "/"
@@ -115,7 +115,7 @@ const addContribution = async (req, res) => {
         else {
             console.log("Failed to update Pending Contribution List")
         }
-        console.log("File added to database", created)
+        console.log("File added to database")
         res.status(201).send({
             message : "Resource Added Successfully",
             redirectTo : "/"
