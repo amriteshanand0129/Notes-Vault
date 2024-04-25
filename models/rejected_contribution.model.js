@@ -5,6 +5,10 @@ const rejected_contributionSchema = mongoose.Schema({
         type : Object,
         required : true
     },
+    uploadedOn : {
+        type : Date,
+        required : true
+    },
     subject_code : {
         type : String,
         required : true,

@@ -85,7 +85,7 @@ const findToken = (req, res, next) => {
           const user = await user_model.findOne({ userId: decoded.id });
           if (!user) {
             return res.status(401).send({
-              error: "Unauthorized, the user for this token does not exist",
+              error: "Unauthorized, the user for this token does not exist DELETE BROWSER TOKEN AND RETRY",
               redirectTo: "/login",
             });
           }

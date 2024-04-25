@@ -34,6 +34,12 @@
             box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.8);
             transform: translateY(-3px);
         }
+
+        .contributeOuterBody {
+            display: block;
+            height: 400px;
+        }
+
         .contributeContent {
             width: 60%;
             height: 400px;
@@ -45,6 +51,7 @@
             border-radius: 10px;
             text-align: center;
         }
+
         #contributeButton {
             border: 1px solid white;
             border-radius: 20px;
@@ -55,16 +62,40 @@
             font-size: 3vh;
             transition: all 0.3s ease;
         }
+
         #contributeButton:hover {
             box-shadow: 0px 1px 10px rgba(255, 255, 255, 0.8);
             transform: translateY(-3px);
+        }
+
+        #footer {
+            display: block;
+            width: 99%;
+            margin: auto;
+            margin-bottom: 20px;
+            padding: 50px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            color: white;
+        }
+
+        #footer a {
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .mainbody {
+            padding-top: 80px;
         }
     </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg border-bottom border-body" style="padding-right: 10px; padding-left: 10px;">
+    <nav class="navbar navbar-expand-lg border-bottom border-body fixed-top"
+        style="padding: 10px; background-color: white;">
         <div class="container-fluid">
             <img src="/images/Logo.png" alt="Logo" height="60px" width="220px">
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -76,7 +107,7 @@
                         <a class="nav-link" href="/resources">Resources</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact Us</a>
+                        <a class="nav-link" href="#footer">Contact Us</a>
                     </li>
                     <% if (user !=undefined ) { %>
                         <li class="nav-item dropdown">
@@ -103,25 +134,42 @@
         </div>
     </nav>
 
-    <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
-        style="display: none; text-align: center; width: 80%; margin: auto;">
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
-        style="display: none; text-align: center; width: 80%; margin: auto;">
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
-        style="display: none; text-align: center; width: 80%; margin: auto;">
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="mainbody">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
+            style="display: none; text-align: center; width: 80%; margin: auto;">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
+            style="display: none; text-align: center; width: 80%; margin: auto;">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
+            style="display: none; text-align: center; width: 80%; margin: auto;">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="resourcesContent">
+            <a href="/resources"><button id="resourcesButton">RESOURCES</button></a><br>
+        </div>
+        <div class="contributeOuterBody">
+            <div class="contributeContent">
+                <button id="contributeButton" onclick="addResources()">CONTRIBUTE</button>
+            </div>
+        </div>
+        <br>
+        <div id="footer">
+            <h4>Contact Us</h4><br>
+            <a href="mailto:amritesh2901@gmail.com">
+                <h5>Email</h5>
+            </a>
+            <a href="https://www.linkedin.com/in/amritesh-anand/" target="_blank">
+                <h5>Linkedin</h5>
+            </a>
+            <a href="https://github.com/amriteshanand0129/Notes-Vault" target="_blank">
+                <h5>Github</h5>
+            </a>
+        </div>
     </div>
 
-    <div class="resourcesContent">
-        <a href="/resources"><button id="resourcesButton">RESOURCES</button></a><br>
-    </div>
-    <div class="contributeContent">
-        <button id="contributeButton" onclick="addResources()">Contribute</button>
-    </div>
     <script>
         const message = sessionStorage.getItem('message');
         if (message) {
@@ -163,7 +211,6 @@
             }
         }
     </script>
-</body>
 </body>
 
 </html>

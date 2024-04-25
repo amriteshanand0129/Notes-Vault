@@ -92,6 +92,7 @@ const addContribution = async (req, res) => {
         const created = await resource_model.create({
             contributerId : file.contributerId,
             contributedBy : file.contributedBy,
+            uploadedOn : file.createdAt,
             subject_code : req.body.subject_code,
             subject_name : req.body.subject_name,
             file_name : req.body.file_name,
@@ -117,7 +118,7 @@ const addContribution = async (req, res) => {
         }
         console.log("File added to database")
         res.status(201).send({
-            message : "Resource Added Successfully",
+            message : "Contribution Added Successfully",
             redirectTo : "/"
         })
     }catch(err) {
@@ -135,6 +136,7 @@ const rejectContribution = async (req, res) => {
         const file = await pending_resource_model.findOne({_id : req.body._id})
         const created = await rejected_contributions_model.create({
             contributerId : file.contributerId,
+            uploadedOn : file.createdAt,
             subject_code : file.subject_code,
             subject_name : file.subject_name,
             file_name : file.file_name,

@@ -211,19 +211,6 @@ app.get("/fetch_pendingfile/:id", [auth_middleware.verifyToken, auth_middleware.
   }
 });
 
-// app.get("/addContribution/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
-//   try {
-//     const pending_resource = await pending_resource_model.findOne({ _id: req.params.id });
-//     return res.render("addContribution", {
-//       pending_resource: pending_resource,
-//     });
-//   } catch (error) {
-//     console.log("Error while loading contribution data", error);
-//     return res.status(501).send({
-//       error: "Error while loading contribution data",
-//     });
-//   }
-// });
 
 app.get("/rejectContribution/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
   try {
@@ -259,7 +246,7 @@ app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
   const user = req.user;
   try {
     const pending_contributions = await pending_resource_model.find({ contributerId: user._id });
-    const approved_contributions_ids = await approved_contributions_model.find({ contributerId: user._id });
+    const approved_contributions_ids = await approved_contributions_model.find({ contributerId: user._id }).sort({uploadedOn : -1});
     const approved_contributions = [];
     const promises = approved_contributions_ids.map(async (approved_contribution) => {
       const approved_resource = await resource_model.findOne({ _id: approved_contribution.contributionId });

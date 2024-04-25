@@ -18,9 +18,11 @@
             border: 1px solid black;
             border-radius: 10px;
             padding: 40px;
+            margin-top: 150px;
         }
+
         .resources-inner {
-            margin-top: 20px;
+            margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid grey;
         }
@@ -42,11 +44,35 @@
         a:hover {
             color: black;
         }
+
+        #footer {
+            display: block;
+            width: 99%;
+            margin: auto;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            padding: 50px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            color: white;
+        }
+
+        #footer a {
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .mainbody {
+            padding-top: 80px;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg border-bottom border-body" style="padding: 10px;">
+    <nav class="navbar navbar-expand-lg border-bottom border-body fixed-top"
+        style="padding: 10px; background-color: white;">
         <div class="container-fluid">
             <img src="/images/Logo.png" alt="Logo" height="60px" width="220px">
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -58,7 +84,7 @@
                         <a class="nav-link" href="/resources">Resources</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact Us</a>
+                        <a class="nav-link" href="#footer">Contact Us</a>
                     </li>
                     <% if (user !=undefined ) { %>
                         <li class="nav-item dropdown">
@@ -83,42 +109,57 @@
                                 <a class="nav-link" href="/login">Login</a>
                             </li>
                             <% } %>
-
                 </ul>
             </div>
         </div>
     </nav>
-    <nav class="navbar bg-body-tertiary" style="padding: 10px 20px 10px 20px;">
-        <div class="container-fluid">
-            <ol class="breadcrumb" style="padding-top: 5px;">
-                <li class="breadcrumb-item" style="font-size: larger;"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" style="font-size: larger;" aria-current="/resources">Resources</li>
-            </ol>
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+    <div class="mainbody">
+        <nav class="navbar bg-body-tertiary" style="padding: 10px 20px 10px 20px; width: 100%; position: fixed;">
+            <div class="container-fluid">
+                <ol class="breadcrumb" style="padding-top: 5px;">
+                    <li class="breadcrumb-item" style="font-size: larger;"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" style="font-size: larger;" aria-current="/resources">Resources
+                    </li>
+                </ol>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        <div class="resources-outer">
+            <h5>
+                <%= Object.keys(subjects).length %> Subjects Found
+            </h5>
+            <div class="resources-inner">
+                <% subjects.forEach(subject=> { %>
+                    <a href="resources/subject/<%= subject._id %>">
+                        <div class="subject">
+                            <h5>
+                                <%= subject.subject_codes%>
+                            </h5>
+                            <h5>
+                                <%= subject._id %>
+                            </h5>
+                        </div>
+                    </a>
+                    <% }) %>
+            </div>
         </div>
-    </nav>
-    <div class="resources-outer">
-        <h5>
-            <%= Object.keys(subjects).length %> Subjects Found
-        </h5>
-        <div class="resources-inner">
-            <% subjects.forEach(subject=> { %>
-                <a href="resources/subject/<%= subject._id %>">
-                    <div class="subject">
-                        <h5>
-                            <%= subject.subject_codes%>
-                        </h5>
-                        <h5>
-                            <%= subject._id %>
-                        </h5>
-                    </div>
-                </a>
-                <% }) %>
+        <div id="footer">
+            <h4>Contact Us</h4><br>
+            <a href="mailto:amritesh2901@gmail.com">
+                <h5>Email</h5>
+            </a>
+            <a href="https://www.linkedin.com/in/amritesh-anand/" target="_blank">
+                <h5>Linkedin</h5>
+            </a>
+            <a href="https://github.com/amriteshanand0129/Notes-Vault" target="_blank">
+                <h5>Github</h5>
+            </a>
         </div>
     </div>
+
 </body>
 
 </html>

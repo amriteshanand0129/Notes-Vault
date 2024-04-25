@@ -9,6 +9,10 @@ const resourcesSchema = mongoose.Schema({
         type : String,
         trim : true
     },
+    uploadedOn : {
+        type : Date,
+        trim : true
+    },
     subject_code : {
         type : String,
         required : true,
