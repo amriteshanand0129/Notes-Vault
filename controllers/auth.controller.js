@@ -14,7 +14,7 @@ const signup = async (req, res) => {
     try {
         const user_created = await user_model.create(userObj)
         res.status(201).send({
-            message : "Thanks " + user_created.name + "! You can login using your userId : " + user_created.userId,
+            message : "Thanks " + user_created.name + "! You can now login using your userId : " + user_created.userId,
             redirectTo : "/"
         })
     }catch(err) {

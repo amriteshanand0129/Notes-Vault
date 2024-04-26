@@ -48,7 +48,7 @@
         .approvedStatus {
             border-radius: 10px;
             padding: 10px 20px;
-            background-color: rgba(127, 255, 0, 0.7);
+            background-color: rgba(0, 255, 0, 0.7);
         }
 
         .rejectedStatus {
@@ -217,32 +217,56 @@
                                 <div class="status">
                                     Status: <span class="approvedStatus">Approved</span>
                                 </div>
-                                <span class="heading">Subject Code: </span>
-                                <%= approved_contribution.subject_code %>
-                                    <br>
-                                    <span class="heading">Subject Name: </span>
-                                    <%= approved_contribution.subject_name %>
+                                <% if(approved_contribution.status==false) { %>
+                                    <span class="heading">Subject Code: </span>
+                                    <%= approved_contribution.details.subject_code %>
                                         <br>
-                                        <span class="heading">File Name: </span>
-                                        <%= approved_contribution.file_name %>
+                                        <span class="heading">Subject Name: </span>
+                                        <%= approved_contribution.details.subject_name %>
                                             <br>
-                                            <span class="heading">Description:</span>
-                                            <%= approved_contribution.description %>
+                                            <span class="heading">File Name: </span>
+                                            <%= approved_contribution.details.file_name %>
                                                 <br>
-                                                <span class="heading">Uploaded On:</span>
-                                                <%= (new
-                                                    Date(approved_contribution.uploadedOn)).toLocaleDateString('en-US',
-                                                    { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+                                                <span class="heading">Description:</span>
+                                                <%= approved_contribution.details.description %>
                                                     <br>
-                                                    <span class="heading">Approved On:</span>
+                                                    <span class="heading">Uploaded On:</span>
                                                     <%= (new
-                                                        Date(approved_contribution.createdAt)).toLocaleDateString('en-US',
+                                                        Date(approved_contribution.details.uploadedOn)).toLocaleDateString('en-US',
                                                         { year: 'numeric' , month: 'long' , day: 'numeric' }) %>
                                                         <br>
-                                                        <a href="/downloadfile/<%= approved_contribution._id %>"
-                                                            download="filename"><button type="button"
-                                                                class="btn btn-outline-info">Download
-                                                                File</button></a>
+                                                        <span class="heading text-danger">This Resource was deleted by
+                                                            ADMIN</span>
+                                                        <% } else { %>
+                                                            <span class="heading">Subject Code: </span>
+                                                            <%= approved_contribution.subject_code %>
+                                                                <br>
+                                                                <span class="heading">Subject Name: </span>
+                                                                <%= approved_contribution.subject_name %>
+                                                                    <br>
+                                                                    <span class="heading">File Name: </span>
+                                                                    <%= approved_contribution.file_name %>
+                                                                        <br>
+                                                                        <span class="heading">Description:</span>
+                                                                        <%= approved_contribution.description %>
+                                                                            <br>
+                                                                            <span class="heading">Uploaded On:</span>
+                                                                            <%= (new
+                                                                                Date(approved_contribution.uploadedOn)).toLocaleDateString('en-US',
+                                                                                { year: 'numeric' , month: 'long' , day: 'numeric' }) %>                                                                                
+                                                                                <br>
+                                                                                <span class="heading">Approved
+                                                                                    On:</span>
+                                                                                <%= (new
+                                                                                    Date(approved_contribution.createdAt)).toLocaleDateString('en-US',
+                                                                                    { year: 'numeric' , month: 'long' , day: 'numeric' }) %>                                                                                    
+                                                                                    <br>
+                                                                                    <a href="/downloadfile/<%= approved_contribution._id %>"
+                                                                                        download="filename"><button
+                                                                                            type="button"
+                                                                                            class="btn btn-outline-info">Download
+                                                                                            File</button></a>
+                                                                                    <% } %>
                             </div>
                             <% }) %>
                     </div>

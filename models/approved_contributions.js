@@ -9,9 +9,12 @@ const approved_contributionsSchema = mongoose.Schema({
         type : Object,
         required : true
     },
-    uploadedOn : {
-        type : Date,
+    status : {
+        type : Boolean,
         required : true
+    },
+    details : {
+        type : Object
     }
 }, {timestamp: true, versionKey : false})
 

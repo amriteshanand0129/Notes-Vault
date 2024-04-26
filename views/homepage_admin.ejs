@@ -64,7 +64,7 @@
         .buttons {
             text-align: center;
         }
-        .btn {
+        .btn-links {
             width: 20%;
             margin: 20px auto 20px auto;
         }
@@ -116,8 +116,8 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <div class="buttons">
-            <a href="/resources"><button type="button" class="btn btn-outline-dark">View Resources</button></a><br>
-            <button type="button" class="btn btn-outline-dark" onclick="addResources()">Add Resource</button>
+            <a href="/resources"><button type="button" class="btn btn-outline-dark btn-links">View Resources</button></a><br>
+            <button type="button" class="btn btn-outline-dark btn-links" onclick="addResources()">Add Resource</button>
         </div>
         <div class="pendingResources">
             <div class="inner-heading">
@@ -234,7 +234,7 @@
                                                 value="<%= resources._id %>" style="cursor: default;" readonly>
                                         </div>
                                         <div class="form-group">
-                                            <label for="remarks">Remarks</label>
+                                            <label for="remarks">Reason</label>
                                             <input type="text" class="form-control" id="remarks" name="remarks"
                                                 required>
                                         </div>
@@ -310,7 +310,7 @@
                 if (response.ok) {
                     const data = await response.json()
                     sessionStorage.setItem("message", data.message)
-                    window.location.href = data.redirectTo;
+                    location.reload();
                 }
                 else {
                     const data = await response.json()
@@ -318,7 +318,7 @@
                     sessionStorage.setItem('error', data.error);
                 }
             } catch (error) {
-                window.location.href = data.redirectTo
+                window.location.href = "/"
                 sessionStorage.setItem('error', "Error while sending request");
                 console.log(error)
             }
@@ -334,7 +334,7 @@
                 if (response.ok) {
                     const data = await response.json()
                     sessionStorage.setItem("message", data.message)
-                    window.location.href = data.redirectTo;
+                    location.reload();
                 }
                 else {
                     const data = await response.json()

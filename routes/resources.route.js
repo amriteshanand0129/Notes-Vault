@@ -18,4 +18,5 @@ module.exports = (app) => {
     app.post("/upload", [upload.single("fileInput"), auth_middleware.verifyToken, addResources_Middleware.verifyUploadFile], addResources_Controller.addResource)
     app.post("/addContribution", [upload.none(), auth_middleware.verifyToken, auth_middleware.isAdmin, addResources_Middleware.verifyContribution], addResources_Controller.addContribution)
     app.post("/rejectContribution", [upload.none(), auth_middleware.verifyToken, auth_middleware.isAdmin], addResources_Controller.rejectContribution)
+    app.delete("/deleteResource/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], addResources_Controller.deleteResource)
 }

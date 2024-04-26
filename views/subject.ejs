@@ -160,7 +160,20 @@
                 </form>
             </div>
         </nav>
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
+                style="display: none; text-align: center;">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
+                style="display: none; text-align: center;">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
+                style="display: none; text-align: center;">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         <div class="subjectfiles-outer">
+            
             <h5>
                 <%= Object.keys(subject_files).length %> Resources Found
             </h5>
@@ -215,6 +228,26 @@
             </a>
         </div>
     </div>
+    <script>
+        const message = sessionStorage.getItem('message');
+        if (message) {
+            document.getElementById('message').style.display = "block";
+            document.getElementById('message').textContent = message;
+            sessionStorage.removeItem('message');
+        }
+        const warning = sessionStorage.getItem('warning');
+        if (warning) {
+            document.getElementById('warning').style.display = "block";
+            document.getElementById('warning').textContent = warning;
+            sessionStorage.removeItem('warning');
+        }
+        const error = sessionStorage.getItem('error');
+        if (error) {
+            document.getElementById('error').style.display = "block";
+            document.getElementById('error').textContent = error;
+            sessionStorage.removeItem('error');
+        }
+    </script>
 
 </body>
 

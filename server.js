@@ -23,7 +23,6 @@ app.use("/images", express.static("images"));
 app.use("/bootstrap", express.static(path.join(__dirname, "node_modules/bootstrap/dist")));
 
 mongoose.connect(db_config.DB_URL);
-// mongoose.connect('mongodb+srv://amritesh2901:AMRishu*9215@cluster0.rl1dmlv.mongodb.net/?retryWrites=true&w=majority');
 const db = mongoose.connection;
 
 db.on("error", () => {
@@ -90,7 +89,7 @@ app.get("/resources", auth_middleware.findToken, async (req, res) => {
           subject_codes: { $addToSet: "$subject_code" },
         },
       },
-    ]);
+    ]).sort({subject_codes: 1});
     let user = undefined;
     if (req.user) {
       user = req.user;
@@ -110,7 +109,7 @@ app.get("/resources", auth_middleware.findToken, async (req, res) => {
 app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (req, res) => {
   try {
     const subject_name = req.params.subject_name;
-    const subject_files = await resource_model.find({ subject_name: subject_name });
+    const subject_files = await resource_model.find({ subject_name: subject_name }).sort({file_name : 1});
     let user = undefined;
     if (req.user) {
       user = req.user;
@@ -226,6 +225,7 @@ app.get("/rejectContribution/:id", [auth_middleware.verifyToken, auth_middleware
   }
 });
 
+
 app.get("/login", async (req, res) => {
   return res.render("login");
 });
@@ -249,8 +249,14 @@ app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
     const approved_contributions_ids = await approved_contributions_model.find({ contributerId: user._id }).sort({uploadedOn : -1});
     const approved_contributions = [];
     const promises = approved_contributions_ids.map(async (approved_contribution) => {
+      if(approved_contribution.status == true) {
       const approved_resource = await resource_model.findOne({ _id: approved_contribution.contributionId });
       return approved_resource;
+      }
+      else {
+        console.log(approved_contribution)
+        return approved_contribution;
+      }
     });
 
     const results = await Promise.all(promises);
