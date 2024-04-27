@@ -15,6 +15,10 @@
             text-decoration: none;
         }
 
+        .resourceHeading {
+            color: grey;
+        }
+
         #pdfViewer {
             width: 100%;
             height: 1000px;
@@ -38,10 +42,6 @@
         .card {
             margin: 20px;
             text-align: left;
-        }
-
-        .resourceHeading {
-            color: grey;
         }
 
         #footer {
@@ -68,6 +68,13 @@
 
         .mainbody {
             padding-top: 80px;
+        }
+
+        .alert {
+            width: 80%;
+            margin: auto;
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -117,7 +124,6 @@
         </div>
     </nav>
     <div class="mainbody">
-
         <nav class="navbar bg-body-tertiary" style="padding: 10px 20px 10px 20px;">
             <div class="container-fluid">
                 <ol class="breadcrumb" style="padding-top: 5px;">
@@ -134,19 +140,8 @@
                 </ol>
             </div>
         </nav>
+        <div id="message"></div>
         <div class="content">
-            <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
-            style="display: none; text-align: center;">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
-            style="display: none; text-align: center;">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
-            style="display: none; text-align: center;">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
@@ -193,8 +188,8 @@
                                     <div style="text-align: center;">
                                         <h5>Are you sure you want to delete this resource ?</h5>
                                         <button type="submit" class="btn btn-outline-danger">Delete</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                                        aria-label="Close">Cancel</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                            aria-label="Close">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -231,45 +226,56 @@
     <script>
         const message = sessionStorage.getItem('message');
         if (message) {
-            document.getElementById('message').style.display = "block";
-            document.getElementById('message').textContent = message;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-success alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('message');
         }
         const warning = sessionStorage.getItem('warning');
         if (warning) {
-            document.getElementById('warning').style.display = "block";
-            document.getElementById('warning').textContent = warning;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-warning alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${warning}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('warning');
         }
         const error = sessionStorage.getItem('error');
         if (error) {
-            document.getElementById('error').style.display = "block";
-            document.getElementById('error').textContent = error;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-danger alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${error}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('error');
         }
-        document.getElementById("deleteResource").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const id = document.getElementById("deleteResource")._id.value;
-            try {
-                const response = await fetch("/deleteResource/" + id, {
-                    method: "DELETE",
-                })
-                if(response.ok) {
-                    const data = await response.json()
-                    sessionStorage.setItem("message", data.message)
-                    window.location.href = data.redirectTo
-                }
-                else {
-                    const data = await response.json()
-                    sessionStorage.setItem('error', data.error);
+        if (document.getElementById("deleteResource")) {
+            document.getElementById("deleteResource").addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const id = document.getElementById("deleteResource")._id.value;
+                try {
+                    const response = await fetch("/deleteResource/" + id, {
+                        method: "DELETE",
+                    })
+                    if (response.ok) {
+                        const data = await response.json()
+                        sessionStorage.setItem("message", data.message)
+                        window.location.href = data.redirectTo
+                    }
+                    else {
+                        const data = await response.json()
+                        sessionStorage.setItem('error', data.error);
+                        location.reload()
+                    }
+                } catch (error) {
                     location.reload()
+                    sessionStorage.setItem('error', "Error while sending request");
+                    console.log(error)
                 }
-            } catch (error) {
-                location.reload()
-                sessionStorage.setItem('error', "Error while sending request");
-                console.log(error)
-            }
-        })
+            })
+        }
     </script>
 </body>
 

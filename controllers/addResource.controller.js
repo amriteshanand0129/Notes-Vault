@@ -108,15 +108,14 @@ const addContribution = async (req, res) => {
     } else {
       console.log("Failed to update Pending Contribution List");
     }
-    console.log("File added to database");
+    console.log("Contribution Accepted Successfully");
     res.status(201).send({
-      message: "Contribution Added Successfully",
+      message: "Contribution Accepted Successfully"
     });
   } catch (err) {
-    console.log("Error adding contribution resource", err);
+    console.log("Error: Accepting Contribution Failed", err);
     res.status(401).send({
-      error: "Error adding contribution resource",
-      redirectTo: "/",
+      error: "Error: Accepting Contribution Failed"
     });
   }
 };
@@ -141,13 +140,12 @@ const rejectContribution = async (req, res) => {
       console.log("Failed to update Pending Contribution List");
     }
     res.status(201).send({
-      message: "Contribution Rejected",
+      message: "Contribution Rejected"
     });
   } catch (err) {
-    console.log("Error deleting resource", err);
+    console.log("Error: Rejecting Contribution Failed", err);
     res.status(401).send({
-      error: "Error deleting contribution resource",
-      redirectTo: "/",
+      error: "Error: Rejecting Contribution Failed"
     });
   }
 };

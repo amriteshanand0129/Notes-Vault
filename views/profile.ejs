@@ -128,6 +128,12 @@
         .mainbody {
             padding-top: 100px;
         }
+
+        .alert {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -162,6 +168,7 @@
         </div>
     </nav>
     <div class="mainbody">
+        <div id="message"></div>
         <% if (Object.keys(pending_contributions).length + Object.keys(approved_contributions).length +
             Object.keys(rejected_contributions).length==0) { %>
             <h1>No Contributions Yet</h1>
@@ -311,6 +318,35 @@
                         </a>
                     </div>
     </div>
+    <script>
+        const message = sessionStorage.getItem('message');
+        if (message) {
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-success alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
+            sessionStorage.removeItem('message');
+        }
+        const warning = sessionStorage.getItem('warning');
+        if (warning) {
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-warning alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${warning}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
+            sessionStorage.removeItem('warning');
+        }
+        const error = sessionStorage.getItem('error');
+        if (error) {
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-danger alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${error}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
+            sessionStorage.removeItem('error');
+        }
+    </script>
 </body>
 
 </html>

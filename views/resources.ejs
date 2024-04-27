@@ -18,7 +18,7 @@
             border: 1px solid black;
             border-radius: 10px;
             padding: 40px;
-            margin-top: 150px;
+            margin-top: 20px;
         }
 
         .resources-inner {
@@ -66,6 +66,15 @@
 
         .mainbody {
             padding-top: 80px;
+        }
+        .mainbody-inner {
+            margin-top: 100px;
+        }
+
+        .alert {
+            width: 80%;
+            margin: auto;
+            text-align: center;
         }
     </style>
 </head>
@@ -127,67 +136,67 @@
                 </form>
             </div>
         </nav>
-        <div class="resources-outer">
-            <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
-                style="display: none; text-align: center;">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="mainbody-inner">
+            <div id="message"></div>
+            <div class="resources-outer">
+                <h5>
+                    <%= Object.keys(subjects).length %> Subjects Found
+                </h5>
+                <div class="resources-inner">
+                    <% subjects.forEach(subject=> { %>
+                        <a href="resources/subject/<%= subject._id %>">
+                            <div class="subject">
+                                <h5>
+                                    <%= subject.subject_codes%>
+                                </h5>
+                                <h5>
+                                    <%= subject._id %>
+                                </h5>
+                            </div>
+                        </a>
+                        <% }) %>
+                </div>
             </div>
-            <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
-                style="display: none; text-align: center;">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div id="footer">
+                <h4>Contact Us</h4><br>
+                <a href="mailto:amritesh2901@gmail.com">
+                    <h5>Email</h5>
+                </a>
+                <a href="https://www.linkedin.com/in/amritesh-anand/" target="_blank">
+                    <h5>Linkedin</h5>
+                </a>
+                <a href="https://github.com/amriteshanand0129/Notes-Vault" target="_blank">
+                    <h5>Github</h5>
+                </a>
             </div>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
-                style="display: none; text-align: center;">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <h5>
-                <%= Object.keys(subjects).length %> Subjects Found
-            </h5>
-            <div class="resources-inner">
-                <% subjects.forEach(subject=> { %>
-                    <a href="resources/subject/<%= subject._id %>">
-                        <div class="subject">
-                            <h5>
-                                <%= subject.subject_codes%>
-                            </h5>
-                            <h5>
-                                <%= subject._id %>
-                            </h5>
-                        </div>
-                    </a>
-                    <% }) %>
-            </div>
-        </div>
-        <div id="footer">
-            <h4>Contact Us</h4><br>
-            <a href="mailto:amritesh2901@gmail.com">
-                <h5>Email</h5>
-            </a>
-            <a href="https://www.linkedin.com/in/amritesh-anand/" target="_blank">
-                <h5>Linkedin</h5>
-            </a>
-            <a href="https://github.com/amriteshanand0129/Notes-Vault" target="_blank">
-                <h5>Github</h5>
-            </a>
         </div>
     </div>
     <script>
         const message = sessionStorage.getItem('message');
         if (message) {
-            document.getElementById('message').style.display = "block";
-            document.getElementById('message').textContent = message;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-success alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('message');
         }
         const warning = sessionStorage.getItem('warning');
         if (warning) {
-            document.getElementById('warning').style.display = "block";
-            document.getElementById('warning').textContent = warning;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-warning alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${warning}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('warning');
         }
         const error = sessionStorage.getItem('error');
         if (error) {
-            document.getElementById('error').style.display = "block";
-            document.getElementById('error').textContent = error;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-danger alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${error}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('error');
         }
     </script>

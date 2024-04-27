@@ -6,41 +6,35 @@ const verifySignUpBody = async (req, res, next) => {
   try {
     if (!req.body.name) {
       return res.status(401).send({
-        error: "Failed! Name was not provided",
-        redirectTo: "/login",
+        error: "Invalid Name"
       });
     }
     if (!req.body.userId) {
       return res.status(401).send({
-        error: "Failed! UserId was not provided",
-        redirectTo: "/login",
+        error: "Invalid UserId"
       });
     }
     if (!req.body.password) {
       return res.status(401).send({
-        error: "Failed! Password was not provided",
-        redirectTo: "/login",
+        error: "Invalid Password"
       });
     }
     if (req.body.password.length < 8 || req.body.password.length > 16) {
       return res.status(401).send({
-        error: "Password size should be 8 to 16 characters",
-        redirectTo: "/login",
+        error: "Password size should be 8 to 16 characters"
       });
     }
     const user = await user_model.findOne({ userId: req.body.userId });
     if (user) {
       return res.status(401).send({
-        error: "Failed! UserId was already present",
-        redirectTo: "/login",
+        error: "UserId not available. Try different UserId"
       });
     }
     next();
   } catch (err) {
-    console.log("Error while validating request object", err);
+    console.log("Error: Request body validation failed", err);
     return res.status(501).send({
-      error: "Error while validating request body",
-      redirectTo: "/login",
+      error: "Error: Request body validation failed"
     });
   }
 };
@@ -49,14 +43,12 @@ const verifySignInBody = (req, res, next) => {
   try {
     if (!req.body.userId) {
       return res.status(401).send({
-        error: "UserId is not provided",
-        redirectTo: "/login",
+        error: "Invalid UserId"
       });
     }
     if (!req.body.password) {
       return res.status(401).send({
-        error: "Password is not provided",
-        redirectTo: "/login",
+        error: "Invalid Password"
       });
     }
     next();

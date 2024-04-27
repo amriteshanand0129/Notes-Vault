@@ -18,12 +18,11 @@
         .subjectfiles-outer {
             width: 90%;
             margin: auto;
-            margin-top: 50px;
             text-align: center;
             border: 1px solid black;
             border-radius: 10px;
             padding: 40px;
-            margin-top: 150px;
+            margin-top: 20px;
         }
 
         .content {
@@ -97,6 +96,16 @@
         .mainbody {
             padding-top: 80px;
         }
+        .mainbody-inner {
+            margin-top: 100px;
+        }
+
+        .alert {
+            width: 80%;
+            margin: auto;
+            margin-top: 80px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -160,43 +169,16 @@
                 </form>
             </div>
         </nav>
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
-                style="display: none; text-align: center;">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
-                style="display: none; text-align: center;">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
-                style="display: none; text-align: center;">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <div class="subjectfiles-outer">
-            
-            <h5>
-                <%= Object.keys(subject_files).length %> Resources Found
-            </h5>
-            <div class="content">
-                <% subject_files.forEach(subject_file=> { %>
-                    <a href="<%= subject_file.subject_name %>/<%= subject_file._id %>">
-                        <% if (subject_file.contributedBy) { %>
-                            <div class="subject_file">
-                                <div class="subject_file_content">
-                                    <h5>
-                                        <%= subject_file.file_name %>
-                                    </h5>
-                                    <p>
-                                        <%= subject_file.description %>
-                                    </p>
-                                    <p style="text-align: right; line-height: 5px;">
-                                        <%= subject_file.filesize %>
-                                    </p>
-                                    <p>Contributed By: <%= subject_file.contributedBy %>
-                                    </p>
-                                </div>
-                            </div>
-                            <% } else { %>
+        <div class="mainbody-inner">
+            <div id="message"></div>
+            <div class="subjectfiles-outer">
+                <h5>
+                    <%= Object.keys(subject_files).length %> Resources Found
+                </h5>
+                <div class="content">
+                    <% subject_files.forEach(subject_file=> { %>
+                        <a href="<%= subject_file.subject_name %>/<%= subject_file._id %>">
+                            <% if (subject_file.contributedBy) { %>
                                 <div class="subject_file">
                                     <div class="subject_file_content">
                                         <h5>
@@ -208,43 +190,69 @@
                                         <p style="text-align: right; line-height: 5px;">
                                             <%= subject_file.filesize %>
                                         </p>
+                                        <p>Contributed By: <%= subject_file.contributedBy %>
+                                        </p>
                                     </div>
                                 </div>
-                                <% } %>
-                    </a>
-                    <% }) %>
+                                <% } else { %>
+                                    <div class="subject_file">
+                                        <div class="subject_file_content">
+                                            <h5>
+                                                <%= subject_file.file_name %>
+                                            </h5>
+                                            <p>
+                                                <%= subject_file.description %>
+                                            </p>
+                                            <p style="text-align: right; line-height: 5px;">
+                                                <%= subject_file.filesize %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                        </a>
+                        <% }) %>
+                </div>
             </div>
-        </div>
-        <div id="footer">
-            <h4>Contact Us</h4><br>
-            <a href="mailto:amritesh2901@gmail.com">
-                <h5>Email</h5>
-            </a>
-            <a href="https://www.linkedin.com/in/amritesh-anand/" target="_blank">
-                <h5>Linkedin</h5>
-            </a>
-            <a href="https://github.com/amriteshanand0129/Notes-Vault" target="_blank">
-                <h5>Github</h5>
-            </a>
+            <div id="footer">
+                <h4>Contact Us</h4><br>
+                <a href="mailto:amritesh2901@gmail.com">
+                    <h5>Email</h5>
+                </a>
+                <a href="https://www.linkedin.com/in/amritesh-anand/" target="_blank">
+                    <h5>Linkedin</h5>
+                </a>
+                <a href="https://github.com/amriteshanand0129/Notes-Vault" target="_blank">
+                    <h5>Github</h5>
+                </a>
+            </div>
         </div>
     </div>
     <script>
         const message = sessionStorage.getItem('message');
         if (message) {
-            document.getElementById('message').style.display = "block";
-            document.getElementById('message').textContent = message;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-success alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('message');
         }
         const warning = sessionStorage.getItem('warning');
         if (warning) {
-            document.getElementById('warning').style.display = "block";
-            document.getElementById('warning').textContent = warning;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-warning alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${warning}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('warning');
         }
         const error = sessionStorage.getItem('error');
         if (error) {
-            document.getElementById('error').style.display = "block";
-            document.getElementById('error').textContent = error;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-danger alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${error}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('error');
         }
     </script>

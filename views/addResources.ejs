@@ -52,7 +52,13 @@
         }
 
         .mainbody {
-            padding-top: 80px;
+            padding-top: 100px;
+        }
+
+        .alert {
+            width: 80%;
+            margin: auto;
+            text-align: center;
         }
     </style>
 </head>
@@ -97,18 +103,7 @@
     </nav>
 
     <div class="mainbody">
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="message"
-            style="display: none; text-align: center; width: 80%; margin: auto; margin-top: 20px ">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning"
-            style="display: none; text-align: center; width: 80%; margin: auto; margin-top: 20px">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error"
-            style="display: none; text-align: center; width: 80%; margin: auto; margin-top: 20px">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        <div id="message"></div>
         <div id="upload-outer">
             <div class="upload-header">
                 <% if (user.userType=="CUSTOMER" ) { %>
@@ -164,28 +159,38 @@
                 } else {
                     const data = await response.json()
                     sessionStorage.setItem('error', data.error);
-                    window.location.href = data.redirectTo
+                    location.reload();
                 }
             } catch (error) {
-                console.log(error)
+                sessionStorage.setItem('error', data.error);
+                location.reload();
             }
         })
         const message = sessionStorage.getItem('message');
         if (message) {
-            document.getElementById('message').style.display = "block";
-            document.getElementById('message').textContent = message;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-success alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('message');
         }
         const warning = sessionStorage.getItem('warning');
         if (warning) {
-            document.getElementById('warning').style.display = "block";
-            document.getElementById('warning').textContent = warning;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-warning alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${warning}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('warning');
         }
         const error = sessionStorage.getItem('error');
         if (error) {
-            document.getElementById('error').style.display = "block";
-            document.getElementById('error').textContent = error;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-danger alert-dismissible fade show";
+            alertDiv.role = "alert";
+            alertDiv.innerHTML = `${error}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('error');
         }
     </script>
