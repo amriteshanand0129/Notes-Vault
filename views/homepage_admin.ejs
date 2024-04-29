@@ -61,9 +61,11 @@
             padding-top: 100px;
         }
 
+        .center-align-button,
         .buttons {
             text-align: center;
         }
+
         .btn-links {
             width: 20%;
             margin: 20px auto 20px auto;
@@ -73,6 +75,26 @@
             width: 80%;
             margin: auto;
             text-align: center;
+        }
+
+        .circular-buffer {
+            width: 40px;
+            height: 40px;
+            margin: auto;
+            border-top: 2px solid black;
+            border-radius: 100%;
+            position: relative;
+            animation: circularMove 0.5s linear infinite;
+        }
+
+        @keyframes circularMove {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -110,7 +132,8 @@
     <div class="mainbody">
         <div id="message"></div>
         <div class="buttons">
-            <a href="/resources"><button type="button" class="btn btn-outline-dark btn-links">View Resources</button></a><br>
+            <a href="/resources"><button type="button" class="btn btn-outline-dark btn-links">View
+                    Resources</button></a><br>
             <button type="button" class="btn btn-outline-dark btn-links" onclick="addResources()">Add Resource</button>
         </div>
         <div class="pendingResources">
@@ -198,7 +221,12 @@
                                             <input type="text" class="form-control" id="description" name="description"
                                                 value="<%= resources.description %>">
                                         </div>
-                                        <button type="submit" class="btn btn-success">Accept</button>
+                                        <div class="center-align-button">
+                                            <button type="submit" class="btn btn-success"
+                                                id="acceptSubmit">Accept</button>
+                                            <div class="circular-buffer" id="accept_circularbuffer"
+                                                style="display: none;"></div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -232,7 +260,11 @@
                                             <input type="text" class="form-control" id="remarks" name="remarks"
                                                 required>
                                         </div>
-                                        <button type="submit" class="btn btn-danger">Reject</button>
+                                        <div class="center-align-button">
+                                            <button type="submit" class="btn btn-danger" id="rejectSubmit">Reject</button>
+                                            <div class="circular-buffer" id="reject_circularbuffer"
+                                                style="display: none;"></div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -297,7 +329,7 @@
                 if (!response.ok) {
                     sessionStorage.setItem('warning', data.warning);
                     window.location.href = data.redirectTo
-                } 
+                }
             } catch (error) {
                 console.log(error)
             }
@@ -305,6 +337,8 @@
         document.getElementById("acceptContributionForm").addEventListener("submit", async function (event) {
             event.preventDefault();
             const formData = new FormData(event.target)
+            document.getElementById("acceptSubmit").style.display = "none";
+            document.getElementById("accept_circularbuffer").style.display = "block";
             try {
                 const response = await fetch("/addContribution", {
                     method: "POST",
@@ -326,6 +360,8 @@
         })
         document.getElementById("rejectContributionForm").addEventListener("submit", async function (event) {
             event.preventDefault();
+            document.getElementById("rejectSubmit").style.display = "none";
+            document.getElementById("reject_circularbuffer").style.display = "block";
             const formData = new FormData(event.target)
             try {
                 const response = await fetch("/rejectContribution", {

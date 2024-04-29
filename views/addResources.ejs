@@ -60,6 +60,26 @@
             margin: auto;
             text-align: center;
         }
+
+        .circular-buffer {
+            width: 40px;
+            height: 40px;
+            margin: auto;
+            border-top: 2px solid black;
+            border-radius: 100%;
+            position: relative;
+            animation: circularMove 0.5s linear infinite;
+        }
+
+        @keyframes circularMove {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -142,7 +162,8 @@
                     </div>
 
                     <div class="center-align-button" style="margin-top: 40px;">
-                        <button type="submit" class="btn btn-dark">Upload</button>
+                        <button type="submit" id="formsubmit" class="btn btn-dark">Upload</button>
+                        <div class="circular-buffer" id="buffer" style="display: none;"></div>
                     </div>
                 </form>
             </div>
@@ -152,6 +173,8 @@
     <script>
         document.getElementById("uploadForm").addEventListener("submit", async function (event) {
             event.preventDefault();
+            document.getElementById("formsubmit").style.display = "none";
+            document.getElementById("buffer").style.display = "block";
             const formData = new FormData(event.target)
             try {
                 const response = await fetch("/upload", {
@@ -165,11 +188,11 @@
                 } else {
                     const data = await response.json()
                     sessionStorage.setItem('error', data.error);
-                    location.reload();
+                    window.location.href = "/addResource"
                 }
             } catch (error) {
                 sessionStorage.setItem('error', data.error);
-                location.reload();
+                window.location.href = "/addResource"
             }
         })
         const message = sessionStorage.getItem('message');

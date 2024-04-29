@@ -16,6 +16,6 @@ const approved_contributionsSchema = mongoose.Schema({
     details : {
         type : Object
     }
-}, {timestamp: true, versionKey : false})
+}, {timestamps: true, versionKey : false})
 
 module.exports = mongoose.model("Approved Contributions", approved_contributionsSchema)

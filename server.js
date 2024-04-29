@@ -67,34 +67,34 @@ app.get("/", auth_middleware.findToken, async (req, res) => {
       return res.status(501).send({
         error: "Error while searching pending contributions in database",
       });
-  }
-}
-  else {
-    let user = undefined;
-    if(req.user) {
-      user = req.user
     }
-      return res.render("homepage", {
-        user: user,
-      });
-    }
-});
-
-app.get("/resources", auth_middleware.findToken, async (req, res) => {
-  try {
-    const subjects = await resource_model.aggregate([
-      {
-        $group: {
-          _id: "$subject_name",
-          subject_codes: { $addToSet: "$subject_code" },
-        },
-      },
-    ]).sort({subject_codes: 1});
+  } else {
     let user = undefined;
     if (req.user) {
       user = req.user;
     }
-    console.log(subjects)
+    return res.render("homepage", {
+      user: user,
+    });
+  }
+});
+
+app.get("/resources", auth_middleware.findToken, async (req, res) => {
+  try {
+    const subjects = await resource_model
+      .aggregate([
+        {
+          $group: {
+            _id: "$subject_name",
+            subject_codes: { $addToSet: "$subject_code" },
+          },
+        },
+      ])
+      .sort({ subject_codes: 1 });
+    let user = undefined;
+    if (req.user) {
+      user = req.user;
+    }
     return res.render("resources", {
       subjects: subjects,
       user: user,
@@ -110,7 +110,7 @@ app.get("/resources", auth_middleware.findToken, async (req, res) => {
 app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (req, res) => {
   try {
     const subject_name = req.params.subject_name;
-    const subject_files = await resource_model.find({ subject_name: subject_name }).sort({file_name : 1});
+    const subject_files = await resource_model.find({ subject_name: subject_name }).select("file_name description filesize contributedBy").sort({ file_name: 1 });
     let user = undefined;
     if (req.user) {
       user = req.user;
@@ -118,7 +118,7 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
     return res.render("subject", {
       subject_name: subject_name,
       subject_files: subject_files,
-      user: user
+      user: user,
     });
   } catch (error) {
     console.log("Error while searching for subject files in database", error);
@@ -131,9 +131,9 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
 app.get("/resources/subject/:subject_name/:file_id", auth_middleware.findToken, async (req, res) => {
   const file_id = req.params.file_id;
   let user = undefined;
-    if (req.user) {
-      user = req.user;
-    }
+  if (req.user) {
+    user = req.user;
+  }
   try {
     const subject_file = await resource_model.findOne({ _id: file_id });
     return res.render("pdf", {
@@ -143,7 +143,7 @@ app.get("/resources/subject/:subject_name/:file_id", auth_middleware.findToken, 
       subject_name: subject_file.subject_name,
       file_name: subject_file.file_name,
       description: subject_file.description,
-      filesize: subject_file.filesize
+      filesize: subject_file.filesize,
     });
   } catch (error) {
     console.log("Error while searching for file in database", error);
@@ -211,7 +211,6 @@ app.get("/fetch_pendingfile/:id", [auth_middleware.verifyToken, auth_middleware.
   }
 });
 
-
 app.get("/rejectContribution/:id", [auth_middleware.verifyToken, auth_middleware.isAdmin], async (req, res) => {
   try {
     const pending_resource = await pending_resource_model.findOne({ _id: req.params.id });
@@ -226,36 +225,33 @@ app.get("/rejectContribution/:id", [auth_middleware.verifyToken, auth_middleware
   }
 });
 
-
 app.get("/login", async (req, res) => {
   return res.render("login");
 });
 
-app.get("/addResource", auth_middleware.verifyToken, async(req, res) => {
+app.get("/addResource", auth_middleware.verifyToken, async (req, res) => {
   res.render("addResources", {
-    user : req.user
-  })
-})
+    user: req.user,
+  });
+});
 app.get("/addResources", auth_middleware.verifyToken, async (req, res) => {
   const user = req.user;
   return res.status(201).send({
-    redirectTo : "addResource"
-  })
+    redirectTo: "addResource",
+  });
 });
 
 app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
   const user = req.user;
   try {
     const pending_contributions = await pending_resource_model.find({ contributerId: user._id });
-    const approved_contributions_ids = await approved_contributions_model.find({ contributerId: user._id }).sort({uploadedOn : -1});
+    const approved_contributions_ids = await approved_contributions_model.find({ contributerId: user._id }).sort({ createdAt: 1 });;
     const approved_contributions = [];
     const promises = approved_contributions_ids.map(async (approved_contribution) => {
-      if(approved_contribution.status == true) {
-      const approved_resource = await resource_model.findOne({ _id: approved_contribution.contributionId });
-      return approved_resource;
-      }
-      else {
-        console.log(approved_contribution)
+      if (approved_contribution.status == true) {
+        const approved_resource = await resource_model.findOne({ _id: approved_contribution.contributionId });
+        return approved_resource;
+      } else {
         return approved_contribution;
       }
     });
@@ -264,7 +260,7 @@ app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
 
     approved_contributions.push(...results);
 
-    const rejected_contributions = await rejected_contributions_model.find({ contributerId: user._id });
+    const rejected_contributions = await rejected_contributions_model.find({ contributerId: user._id })
     return res.render("profile", {
       user: req.user,
       pending_contributions: pending_contributions,
