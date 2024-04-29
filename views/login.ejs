@@ -99,20 +99,24 @@
                 <form id="signupForm" action="/signup_user" method="post">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" id="name" name="name" class="form-control" style="border: 1px solid grey;">
+                        <input type="text" id="name" name="name" class="form-control" style="border: 1px solid grey;"
+                            onkeyup="checkName()">
+                        <span id="namemessage"></span>
                     </div>
                     <div class="mb-3">
                         <label for="userId" class="form-label">Username</label>
-                        <input type="text" id="userId" name="userId" class="form-control"
-                            style="border: 1px solid grey;">
+                        <input type="text" id="signupuserId" name="userId" class="form-control"
+                            style="border: 1px solid grey;" onkeyup="checkUsername()">
+                            <span id="signup_useridmessage"></span>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password" class="form-control"
-                            style="border: 1px solid grey;">
+                        <input type="password" id="signuppassword" name="password" class="form-control"
+                            style="border: 1px solid grey;" onkeyup="checkPassword()">
+                            <span id="signup_passwordmessage"></span>
                     </div>
                     <div class="center-align-button">
-                        <button type="submit" class="btn btn-dark" style="margin-top: 40px;">Submit</button>
+                        <button type="submit" class="btn btn-dark" id="signupSubmit" style="margin-top: 40px;">Submit</button>
                     </div>
                 </form>
             </div>
@@ -120,10 +124,60 @@
     </div>
 
     <script>
+        function checkName() {
+            const name = document.getElementById("name").value;
+            if(name.length == 0) {
+                document.getElementById("namemessage").innerHTML = "Name cannot be null";
+                document.getElementById("namemessage").classList.add("text-danger")
+                document.getElementById("signupSubmit").classList.add("disabled")
+            }
+            else if(name.length > 30) {
+                document.getElementById("namemessage").innerHTML = "Name should be less than 30 characters";
+                document.getElementById("namemessage").classList.add("text-danger")
+                document.getElementById("signupSubmit").classList.add("disabled")
+            }
+            else {
+                document.getElementById("namemessage").innerHTML = "";
+                document.getElementById("signupSubmit").classList.remove("disabled")
+
+            }
+        }
+        function checkUsername() {
+            const username = document.getElementById("signupuserId").value;
+            if(username.length == 0) {
+                document.getElementById("signup_useridmessage").innerHTML = "Username cannot be null";
+                document.getElementById("signup_useridmessage").classList.add("text-danger")
+                document.getElementById("signupSubmit").classList.add("disabled")
+            }
+            else if(username.length > 30) {
+                document.getElementById("signup_useridmessage").innerHTML = "Username should be less than 30 characters";
+                document.getElementById("signup_useridmessage").classList.add("text-danger")
+                document.getElementById("signupSubmit").classList.add("disabled")
+            }
+            else {
+                document.getElementById("signup_useridmessage").innerHTML = "";
+                document.getElementById("signupSubmit").classList.remove("disabled")
+            }
+        }
+        function checkPassword() {
+            const password = document.getElementById("signuppassword").value;
+            if(password.length == 0) {
+                document.getElementById("signup_passwordmessage").innerHTML = "Password cannot be null";
+                document.getElementById("signup_passwordmessage").classList.add("text-danger")
+                document.getElementById("signupSubmit").classList.add("disabled")
+            }
+            else if(password.length < 8 || password.length > 16) {
+                document.getElementById("signup_passwordmessage").innerHTML = "Password length should be 8 to 16 characters";
+                document.getElementById("signup_passwordmessage").classList.add("text-danger")
+                document.getElementById("signupSubmit").classList.add("disabled")
+            }
+            else {
+                document.getElementById("signup_passwordmessage").innerHTML = "";
+                document.getElementById("signupSubmit").classList.remove("disabled")
+            }
+        }
         function displaySignIn() {
             document.getElementById('message').style.display = "none";
-            document.getElementById('error').style.display = "none";
-            document.getElementById('warning').style.display = "none";
             document.getElementById("signup").style.display = "none";
             document.getElementById("login").style.display = "block";
             document.getElementById('signUpBtn').classList.remove('active');
@@ -131,8 +185,6 @@
         }
         function displaySignUp() {
             document.getElementById('message').style.display = "none";
-            document.getElementById('error').style.display = "none";
-            document.getElementById('warning').style.display = "none";
             document.getElementById("login").style.display = "none";
             document.getElementById("signup").style.display = "block";
             document.getElementById('signInBtn').classList.remove('active');

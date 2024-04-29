@@ -232,14 +232,12 @@ app.get("/login", async (req, res) => {
 });
 
 app.get("/addResource", auth_middleware.verifyToken, async(req, res) => {
-  console.log("Rendering page")
   res.render("addResources", {
     user : req.user
   })
 })
 app.get("/addResources", auth_middleware.verifyToken, async (req, res) => {
   const user = req.user;
-  console.log("Sending redirect message")
   return res.status(201).send({
     redirectTo : "addResource"
   })
