@@ -98,12 +98,42 @@ app.get("/resources", auth_middleware.findToken, async (req, res) => {
     return res.render("resources", {
       subjects: subjects,
       user: user,
+      searchvalue : ""
     });
   } catch (error) {
     console.log("Error while searching for resources in database", error);
     return res.status(501).send({
       error: "Error while searching for resources in database",
     });
+  }
+});
+
+app.get("/searchresources", async (req, res) => {
+  const searchvalue = req.query.searchvalue;
+  try {
+    const subjects = await resource_model.aggregate([
+      {
+        $group: {
+          _id: "$subject_name",
+          subject_codes: { $addToSet: "$subject_code" },
+        },
+      },
+    ]);
+    const filteredSubjects = subjects.filter((subject) => subject.subject_codes.includes(searchvalue));
+    let user = undefined;
+    if (req.user) {
+      user = req.user;
+    }
+    return res.render("resources", {
+      subjects: filteredSubjects,
+      user: user,
+      searchvalue : searchvalue
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(501).send({
+      error: "Error accessing subjects"
+    })
   }
 });
 
@@ -119,6 +149,7 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
       subject_name: subject_name,
       subject_files: subject_files,
       user: user,
+      searchvalue : ""
     });
   } catch (error) {
     console.log("Error while searching for subject files in database", error);
@@ -127,6 +158,29 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
     });
   }
 });
+app.get("/resources/subject/searchsubjectfiles/:subject_name", async (req, res) => {
+  const searchvalue = req.query.searchvalue;
+  const subject_name = req.params.subject_name;
+  try {
+    const subject_files = await resource_model.find({ subject_name: subject_name }).select("file_name description filesize contributedBy").sort({ file_name: 1 });
+    let user = undefined;
+    if (req.user) {
+      user = req.user;
+    }
+    const filteredSubjectfiles = subject_files.filter((subjectfile) => subjectfile.file_name.includes(searchvalue));
+    return res.render("subject", {
+      subject_name: subject_name,
+      subject_files: filteredSubjectfiles,
+      user: user,
+      searchvalue : searchvalue
+    });
+  } catch (error) {
+    console.log("Error while searching for subject files in database", error);
+    return res.status(501).send({
+      error: "Error while searching for subject files in database",
+    });
+  }
+})
 
 app.get("/resources/subject/:subject_name/:file_id", auth_middleware.findToken, async (req, res) => {
   const file_id = req.params.file_id;
@@ -245,7 +299,7 @@ app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
   const user = req.user;
   try {
     const pending_contributions = await pending_resource_model.find({ contributerId: user._id });
-    const approved_contributions_ids = await approved_contributions_model.find({ contributerId: user._id }).sort({ createdAt: 1 });;
+    const approved_contributions_ids = await approved_contributions_model.find({ contributerId: user._id }).sort({ createdAt: 1 });
     const approved_contributions = [];
     const promises = approved_contributions_ids.map(async (approved_contribution) => {
       if (approved_contribution.status == true) {
@@ -260,7 +314,7 @@ app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {
 
     approved_contributions.push(...results);
 
-    const rejected_contributions = await rejected_contributions_model.find({ contributerId: user._id })
+    const rejected_contributions = await rejected_contributions_model.find({ contributerId: user._id });
     return res.render("profile", {
       user: req.user,
       pending_contributions: pending_contributions,

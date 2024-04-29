@@ -163,8 +163,8 @@
                         <%= subject_name %>
                     </li>
                 </ol>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" role="search" action="/resources/subject/searchsubjectfiles/<%= subject_name %>" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search File Name" aria-label="Search" name="searchvalue" value="<%= searchvalue %>">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>

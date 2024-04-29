@@ -39,7 +39,7 @@ const signin = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ id: user.userId }, auth_config.secret, { expiresIn: 3600 });
+    const token = jwt.sign({ id: user.userId }, auth_config.secret, { expiresIn: 7200 });
     res.status(201).cookie("token", token);
     res.send({
       message: "Logged In Successfully",

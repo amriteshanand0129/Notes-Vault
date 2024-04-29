@@ -130,8 +130,8 @@
                     <li class="breadcrumb-item active" style="font-size: larger;" aria-current="/resources">Resources
                     </li>
                 </ol>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" role="search" action="/searchresources" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search Subject Code" aria-label="Search" name="searchvalue" value="<%= searchvalue %>">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>
