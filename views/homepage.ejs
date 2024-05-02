@@ -9,79 +9,74 @@
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
     <style>
-        .resourcesContent {
-            margin: 20px 5% 20px 20px;
-            width: 60%;
-            border-radius: 10px;
-            padding-bottom: 120px;
-            background-image: url("/images/Home.png");
-            background-size: cover;
-        }
-
-        #resourcesButton {
-            border: 1px solid white;
-            border-radius: 20px;
-            margin: 35% auto auto 65%;
-            padding: 10px 30px;
-            background-color: rgba(255, 255, 255, 0.1);
+        .resourcesOuterBody {
+            width: 90%;
+            height: 65vh;
+            margin: auto;
+            margin-top: 30px;
+            border-radius: 15px;
+            background-image: linear-gradient(to top right, #30cfd0 0%, #330867 100%);
             color: white;
-            font-size: 2.5vh;
-            transition: all 0.3s ease;
-        }
-
-
-        .contributeOuterBody {
-            display: block;
-            height: 400px;
-        }
-
-        .contributeContent {
-            width: 60%;
-            margin-right: 5%;
-            margin-bottom: 20px;
-            padding-bottom: 40px;
-            float: right;
-            background-image: url("/images/Contribute.png");
-            background-size: cover;
-            border-radius: 10px;
             text-align: center;
         }
 
-        #contributeButton {
-            border: 1px solid white;
+        .resourcesContent {
+            padding-top: 12%;
+        }
+
+        h1 {
+            font-family: "Poetsen One", sans-serif;
+            font-size: 50px;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .contributeOuterBody {
+            width: 90%;
+            height: 65vh;
+            margin: auto;
+            margin-top: 50px;
+            border-radius: 15px;
+            background-color: #DCD9D4;
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), radial-gradient(at 50% 0%, rgba(255, 255, 255, 0.10) 0%, rgba(0, 0, 0, 0.50) 50%);
+            background-blend-mode: soft-light, screen;
+            text-align: center;
+        }
+
+        .contributeContent {
+            padding-top: 12%;
+        }
+
+        .Button {
             border-radius: 20px;
-            margin-top: 30%;
             padding: 10px 30px;
             background-color: rgba(255, 255, 255, 0.1);
-            color: white;
             font-size: 2.5vh;
             transition: all 0.3s ease;
         }
 
-        #resourcesButton:hover {
+        #ResourcesButton {
+            border: 1px solid white;
+            color: white;
+        }
+
+        #ContributeButton {
+            border: 1px solid black;
+            color: black;
+        }
+
+        #ResourcesButton:hover {
             box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.8);
             transform: translateY(-3px);
         }
 
-        #contributeButton:hover {
-            box-shadow: 0px 1px 10px rgba(255, 255, 255, 0.8);
+        #ContributeButton:hover {
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.8);
             transform: translateY(-3px);
-        }
-
-        @media screen and (max-width: 1000px) {
-            .contributeContent {
-                width: 98%;
-                float: none;
-                margin: auto;
-                margin-top: 20px;
-            }
-            .resourcesContent {
-                width: 98%;
-                margin: auto;
-                padding-bottom: 80px;
-
-            }
         }
 
         #footer {
@@ -158,12 +153,19 @@
 
     <div class="mainbody">
         <div id="message"></div>
-        <div class="resourcesContent">
-            <a href="/resources"><button id="resourcesButton">RESOURCES</button></a><br>
+        <div class="resourcesOuterBody">
+            <div class="resourcesContent">
+                <h1>LOOKING FOR COLLEGE NOTES ?</h1>
+                <h1>CHECK OUT OUR</h1>
+                <br>
+                <a href="/resources"><button class="Button" id="ResourcesButton">RESOURCES</button></a><br>
+            </div>
         </div>
         <div class="contributeOuterBody">
             <div class="contributeContent">
-                <button id="contributeButton" onclick="addResources()">CONTRIBUTE</button>
+                <h1>CONTRIBUTE YOUR NOTES AND HELP YOUR PEERS !</h1>
+                <br>
+                <button class="Button" id="ContributeButton" onclick="addResources()">CONTRIBUTE</button>
             </div>
         </div>
         <br>
