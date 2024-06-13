@@ -3,14 +3,19 @@ const mongoose = require("mongoose");
 const path = require("path");
 const cookie_parser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
+
+// Configuration modules
 const server_config = require("./configs/server.config");
 const db_config = require("./configs/db.config");
 
+// Database model modules
 const user_model = require("./models/user.model");
 const resource_model = require("./models/resources.model");
 const pending_resource_model = require("./models/pending_resource.model");
 const approved_contributions_model = require("./models/approved_contributions");
 const rejected_contributions_model = require("./models/rejected_contribution.model");
+
+// Middleware modules
 const auth_middleware = require("./middlewares/auth.middleware");
 
 const app = express();
