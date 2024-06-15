@@ -94,7 +94,7 @@
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resources">Resources</a>
+                        <a class="nav-link" href="/subject_catalog">Resources</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact Us</a>
@@ -153,9 +153,9 @@
                     </div>
                     <div class="mb-3"><input type="file" id="fileInput" name="fileInput" class="form-control"
                             style="border: 1px solid grey;">
-                            <span id="passwordHelpInline" class="form-text">
-                                File size must be less than 16MB.
-                            </span>
+                        <span id="passwordHelpInline" class="form-text">
+                            File size must be less than 16MB.
+                        </span>
                     </div>
 
                     <div class="center-align-button" style="margin-top: 40px;">
@@ -185,11 +185,11 @@
                 } else {
                     const data = await response.json()
                     sessionStorage.setItem('error', data.error);
-                    window.location.href = "/addResource"
+                    window.location.href = "/uploadResource"
                 }
             } catch (error) {
                 sessionStorage.setItem('error', data.error);
-                window.location.href = "/addResource"
+                window.location.href = "/uploadResource"
             }
         })
         const message = sessionStorage.getItem('message');

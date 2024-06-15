@@ -36,7 +36,8 @@
                 width: 90%;
             }
 
-            #login, #signup {
+            #login,
+            #signup {
                 width: 100%;
             }
         }
@@ -98,68 +99,77 @@
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resources">Resources</a>
+                        <a class="nav-link" href="/subject_catalog">Resources</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
     <div class="mainbody">
-        <div id="message"></div>
-        <div class="login-outer">
-            <div class="center-align-button">
-                <div class="btn-group">
-                    <button class="btn btn-outline-dark active" id="signInBtn" onclick="displaySignIn()">Sign
-                        In</button>
-                    <button class="btn btn-outline-dark" id="signUpBtn" onclick="displaySignUp()">Sign Up</button>
+        <% if (server_message) { %>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div aria-hidden="true">
+                    <%= server_message %>
                 </div>
             </div>
-            <div id="login">
-                <form id="loginForm" action="/login_user" method="post">
-                    <div class="mb-3">
-                        <label for="userId" class="form-label">Username</label>
-                        <input type="text" id="userId" name="userId" class="form-control"
-                            style="border: 1px solid grey;">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password" class="form-control"
-                            style="border: 1px solid grey;">
-                    </div>
-                    <div class="center-align-button" style="margin-top: 40px;">
-                        <button type="submit" class="btn btn-dark" id="signinSubmit">Submit</button>
-                        <div class="circular-buffer" id="signin_buffer" style="display: none;"></div>
-                    </div>
-                </form>
-            </div>
-            <div id="signup" style="display: none;">
-                <form id="signupForm" action="/signup_user" method="post">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" id="name" name="name" class="form-control" style="border: 1px solid grey;"
-                            onkeyup="checkName()">
-                        <span id="namemessage"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userId" class="form-label">Username</label>
-                        <input type="text" id="signupuserId" name="userId" class="form-control"
-                            style="border: 1px solid grey;" onkeyup="checkUsername()">
-                        <span id="signup_useridmessage"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="signuppassword" name="password" class="form-control"
-                            style="border: 1px solid grey;" onkeyup="checkPassword()">
-                        <span id="signup_passwordmessage"></span>
-                    </div>
+            <% } %>
+                <div id="message"></div>
+                <div class="login-outer">
                     <div class="center-align-button">
-                        <button type="submit" class="btn btn-dark" id="signupSubmit"
-                            style="margin-top: 40px;">Submit</button>
-                            <div class="circular-buffer" id="signup_buffer" style="display: none;"></div>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-dark active" id="signInBtn" onclick="displaySignIn()">Sign
+                                In</button>
+                            <button class="btn btn-outline-dark" id="signUpBtn" onclick="displaySignUp()">Sign
+                                Up</button>
+                        </div>
                     </div>
-                </form>
-            </div>
-        </div>
+                    <div id="login">
+                        <form id="loginForm" action="/login_user" method="post">
+                            <div class="mb-3">
+                                <label for="userId" class="form-label">Username</label>
+                                <input type="text" id="userId" name="userId" class="form-control"
+                                    style="border: 1px solid grey;">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" id="password" name="password" class="form-control"
+                                    style="border: 1px solid grey;">
+                            </div>
+                            <div class="center-align-button" style="margin-top: 40px;">
+                                <button type="submit" class="btn btn-dark" id="signinSubmit">Submit</button>
+                                <div class="circular-buffer" id="signin_buffer" style="display: none;"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="signup" style="display: none;">
+                        <form id="signupForm" action="/signup_user" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" id="name" name="name" class="form-control"
+                                    style="border: 1px solid grey;" onkeyup="checkName()">
+                                <span id="namemessage"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="userId" class="form-label">Username</label>
+                                <input type="text" id="signupuserId" name="userId" class="form-control"
+                                    style="border: 1px solid grey;" onkeyup="checkUsername()">
+                                <span id="signup_useridmessage"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" id="signuppassword" name="password" class="form-control"
+                                    style="border: 1px solid grey;" onkeyup="checkPassword()">
+                                <span id="signup_passwordmessage"></span>
+                            </div>
+                            <div class="center-align-button">
+                                <button type="submit" class="btn btn-dark" id="signupSubmit"
+                                    style="margin-top: 40px;">Submit</button>
+                                <div class="circular-buffer" id="signup_buffer" style="display: none;"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
     </div>
 
     <script>

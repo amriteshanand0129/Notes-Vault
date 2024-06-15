@@ -10,14 +10,10 @@
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
-        a {
-            color: grey;
-            text-decoration: none;
-        }
-
-        .subjectfiles-outer {
+        .resources-outer {
             width: 90%;
             margin: auto;
+            margin-top: 50px;
             text-align: center;
             border: 1px solid black;
             border-radius: 10px;
@@ -25,38 +21,34 @@
             margin-top: 20px;
         }
 
-        .content {
-            margin: auto;
+        .resources-inner {
             margin-top: 30px;
-            text-align: center;
+            padding-top: 20px;
             border-top: 1px solid grey;
-            padding: 40px;
         }
 
-        .subject_file {
-            margin: 20px;
+        .subject {
             border: 1px solid grey;
             border-radius: 10px;
             min-width: 25%;
+            padding: 20px;
+            margin: 20px;
             display: inline-block;
         }
 
-        .subject_file:hover {
-            border: 1px solid black;
-            color: black;
-        }
-
-        .subject_file_content {
-            padding: 20px 20px 0px 20px;
-        }
-
-        @media screen and (max-width: 800px) {
-            .content {
-                padding: 20px;
-            }
-            .subject_file {
+        @media screen and (max-width: 700px) {
+            .subject {
                 width: 100%;
             }
+        }
+
+        a {
+            color: grey;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: black;
         }
 
         #footer {
@@ -81,6 +73,7 @@
         .mainbody {
             padding-top: 80px;
         }
+
         .mainbody-inner {
             margin-top: 100px;
         }
@@ -88,7 +81,6 @@
         .alert {
             width: 80%;
             margin: auto;
-            margin-top: 80px;
             text-align: center;
         }
     </style>
@@ -105,7 +97,7 @@
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resources">Resources</a>
+                        <a class="nav-link" href="/subject_catalog">Resources</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#footer">Contact Us</a>
@@ -142,58 +134,34 @@
             <div class="container-fluid">
                 <ol class="breadcrumb" style="padding-top: 5px;">
                     <li class="breadcrumb-item" style="font-size: larger;"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item" style="font-size: larger;"><a href="/resources">Resources</a></li>
-                    <li class="breadcrumb-item active" style="font-size: larger;"
-                        aria-current="/resources/subject/<%= subject_name %>">
-                        <%= subject_name %>
+                    <li class="breadcrumb-item active" style="font-size: larger;" aria-current="/subject_catalog">
+                        Resources
                     </li>
                 </ol>
-                <form class="d-flex" role="search" action="/resources/subject/searchsubjectfiles/<%= subject_name %>" method="get">
-                    <input class="form-control me-2" type="search" placeholder="Search File Name" aria-label="Search" name="searchvalue" value="<%= searchvalue %>">
+                <form class="d-flex" role="search" action="/searchcatalog" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search Subject Code" aria-label="Search"
+                        name="searchvalue" value="<%= searchvalue %>">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>
         </nav>
         <div class="mainbody-inner">
             <div id="message"></div>
-            <div class="subjectfiles-outer">
+            <div class="resources-outer">
                 <h5>
-                    <%= Object.keys(subject_files).length %> Resources Found
+                    <%= Object.keys(subjects).length %> Subjects Found
                 </h5>
-                <div class="content">
-                    <% subject_files.forEach(subject_file=> { %>
-                        <a href="<%= subject_name %>/<%= subject_file._id %>">
-                            <% if (subject_file.contributedBy) { %>
-                                <div class="subject_file">
-                                    <div class="subject_file_content">
-                                        <h5>
-                                            <%= subject_file.file_name %>
-                                        </h5>
-                                        <p>
-                                            <%= subject_file.description %>
-                                        </p>
-                                        <p style="text-align: right; line-height: 5px;">
-                                            <%= subject_file.filesize %>
-                                        </p>
-                                        <p>Contributed By: <%= subject_file.contributedBy %>
-                                        </p>
-                                    </div>
-                                </div>
-                                <% } else { %>
-                                    <div class="subject_file">
-                                        <div class="subject_file_content">
-                                            <h5>
-                                                <%= subject_file.file_name %>
-                                            </h5>
-                                            <p>
-                                                <%= subject_file.description %>
-                                            </p>
-                                            <p style="text-align: right; line-height: 5px;">
-                                                <%= subject_file.filesize %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <% } %>
+                <div class="resources-inner">
+                    <% subjects.forEach(subject=> { %>
+                        <a href="subject_catalog/subject/<%= subject._id %>">
+                            <div class="subject">
+                                <h5>
+                                    <%= subject.subject_codes%>
+                                </h5>
+                                <h5>
+                                    <%= subject._id %>
+                                </h5>
+                            </div>
                         </a>
                         <% }) %>
                 </div>
@@ -241,7 +209,6 @@
             sessionStorage.removeItem('error');
         }
     </script>
-
 </body>
 
 </html>

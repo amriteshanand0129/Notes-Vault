@@ -121,7 +121,7 @@
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resources">Resources</a>
+                        <a class="nav-link" href="/subject_catalog">Resources</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#footer">Contact Us</a>
@@ -158,14 +158,14 @@
                 <h1>LOOKING FOR COLLEGE NOTES ?</h1>
                 <h1>CHECK OUT OUR</h1>
                 <br>
-                <a href="/resources"><button class="Button" id="ResourcesButton">RESOURCES</button></a><br>
+                <a href="/subject_catalog"><button class="Button" id="ResourcesButton">RESOURCES</button></a><br>
             </div>
         </div>
         <div class="contributeOuterBody">
             <div class="contributeContent">
                 <h1>CONTRIBUTE YOUR NOTES AND HELP YOUR PEERS !</h1>
                 <br>
-                <button class="Button" id="ContributeButton" onclick="addResources()">CONTRIBUTE</button>
+                <a href="/uploadResource"><button class="Button" id="ContributeButton">CONTRIBUTE</button></a>
             </div>
         </div>
         <br>
@@ -210,23 +210,6 @@
             alertDiv.innerHTML = `${error}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
             document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('error');
-        }
-        async function addResources() {
-            try {
-                const response = await fetch("/addResources")
-                const data = await response.json()
-                if (response.ok) {
-                    window.location.href = data.redirectTo;
-                }
-                else {
-                    sessionStorage.setItem('warning', data.warning);
-                    window.location.href = data.redirectTo
-                }
-            } catch (error) {
-                console.log(error)
-                sessionStorage.setItem('error', "Error: Cannot send request to server");
-                window.location.href = "/";
-            }
         }
     </script>
 </body>

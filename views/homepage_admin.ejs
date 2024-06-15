@@ -111,7 +111,7 @@
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resources">Resources</a>
+                        <a class="nav-link" href="/subject_catalog">Resources</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -132,9 +132,10 @@
     <div class="mainbody">
         <div id="message"></div>
         <div class="buttons">
-            <a href="/resources"><button type="button" class="btn btn-outline-dark btn-links">View
+            <a href="/subject_catalog"><button type="button" class="btn btn-outline-dark btn-links">View
                     Resources</button></a><br>
-            <button type="button" class="btn btn-outline-dark btn-links" onclick="addResources()">Add Resource</button>
+            <a href="/uploadResource"><button type="button" class="btn btn-outline-dark btn-links">Add
+                    Resource</button></a>
         </div>
         <div class="pendingResources">
             <div class="inner-heading">
@@ -188,7 +189,7 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="acceptContributionForm" action="/addContribution" method="post"
+                                    <form id="acceptContributionForm" action="/acceptContribution" method="post"
                                         enctype="application/x-www-form-urlencoded">
                                         <div class="form-group">
                                             <label for="contributedBy">Contributed By</label><br>
@@ -261,7 +262,8 @@
                                                 required>
                                         </div>
                                         <div class="center-align-button">
-                                            <button type="submit" class="btn btn-danger" id="rejectSubmit">Reject</button>
+                                            <button type="submit" class="btn btn-danger"
+                                                id="rejectSubmit">Reject</button>
                                             <div class="circular-buffer" id="reject_circularbuffer"
                                                 style="display: none;"></div>
                                         </div>
@@ -322,25 +324,13 @@
             document.getElementById("message").appendChild(alertDiv);
             sessionStorage.removeItem('error');
         }
-        async function addResources() {
-            try {
-                const response = await fetch("/addResources")
-                const data = await response.json()
-                if (!response.ok) {
-                    sessionStorage.setItem('warning', data.warning);
-                    window.location.href = data.redirectTo
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
         document.getElementById("acceptContributionForm").addEventListener("submit", async function (event) {
             event.preventDefault();
             const formData = new FormData(event.target)
             document.getElementById("acceptSubmit").style.display = "none";
             document.getElementById("accept_circularbuffer").style.display = "block";
             try {
-                const response = await fetch("/addContribution", {
+                const response = await fetch("/acceptContribution", {
                     method: "POST",
                     body: formData
                 })
@@ -383,22 +373,6 @@
                 console.log(error)
             }
         })
-        async function addResources() {
-            try {
-                const response = await fetch("/addResources")
-                if (response.ok) {
-                    const data = await response.json()
-                    window.location.href = data.redirectTo;
-                }
-                else {
-                    const data = await response.json()
-                    sessionStorage.setItem('warning', data.warning);
-                    window.location.href = data.redirectTo
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
     </script>
 
 </body>

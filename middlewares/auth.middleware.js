@@ -1,54 +1,66 @@
-const user_model = require("../models/user.model");
+// Dependencies
+const path = require("path");
+const express = require("express");
 const jwt = require("jsonwebtoken");
+
+// Database model modules
+const user_model = require("../models/user.model");
 const auth_config = require("../configs/auth.config");
 
+const app = express();
+
+app.set("view engine", "ejs");
+app.set("views", path.resolve("../views"));
+
+// Signup request body verification
 const verifySignUpBody = async (req, res, next) => {
   try {
     if (!req.body.name) {
       return res.status(401).send({
-        error: "Invalid Name"
+        error: "Invalid Name",
       });
     }
     if (!req.body.userId) {
       return res.status(401).send({
-        error: "Invalid UserId"
+        error: "Invalid UserId",
       });
     }
     if (!req.body.password) {
       return res.status(401).send({
-        error: "Invalid Password"
+        error: "Invalid Password",
       });
     }
     if (req.body.password.length < 8 || req.body.password.length > 16) {
       return res.status(401).send({
-        error: "Password size should be 8 to 16 characters"
+        error: "Password size should be 8 to 16 characters",
       });
     }
     const user = await user_model.findOne({ userId: req.body.userId });
     if (user) {
       return res.status(401).send({
-        error: "UserId not available. Try different UserId"
+        error: "UserId not available. Try different UserId",
       });
     }
     next();
   } catch (err) {
     console.log("Error: Request body validation failed", err);
     return res.status(501).send({
-      error: "Error: Request body validation failed"
+      error: "Error: Request body validation failed",
     });
   }
 };
 
+// Signin request body verification
 const verifySignInBody = (req, res, next) => {
   try {
     if (!req.body.userId) {
       return res.status(401).send({
-        error: "Invalid UserId"
+        error: "Invalid UserId",
       });
     }
     if (!req.body.password) {
       return res.status(401).send({
-        error: "Invalid Password"
+        error: "Invalid Password",
       });
     }
     next();
@@ -103,14 +115,14 @@ const findToken = (req, res, next) => {
   }
 };
 
+// Token verification middleware for login required pages
 const verifyToken = (req, res, next) => {
   if (req.cookies?.token) {
     const token = req.cookies.token;
     jwt.verify(token, auth_config.secret, async (err, decoded) => {
       if (err) {
-        return res.status(401).send({
-          warning: "You must be logged in",
-          redirectTo: "/login",
+        return res.render("login", {
+          server_message: "You must be logged in",
         });
       }
       try {
@@ -132,13 +144,13 @@ const verifyToken = (req, res, next) => {
       }
     });
   } else {
-    return res.status(401).send({
-      warning: "You must be logged in",
-      redirectTo: "/login",
+    return res.render("login", {
+      server_message: "You must be logged in",
     });
   }
 };
 
+// Admin verification
 const isAdmin = (req, res, next) => {
   try {
     const user = req.user;
@@ -146,8 +158,8 @@ const isAdmin = (req, res, next) => {
       next();
     } else {
       return res.status(403).send({
-        warning : "Only ADMIN user are allowed to access this endpoint",
-        redirectTo : "/"
+        warning: "Only ADMIN user are allowed to access this endpoint",
+        redirectTo: "/",
       });
     }
   } catch (err) {

@@ -1,11 +1,15 @@
+// Dependencies
+const file = require("fs");
+const mongoose = require("mongoose");
+
+// Database model modules
 const resource_model = require("../models/resources.model");
 const pending_resource_model = require("../models/pending_resource.model");
 const approved_contributions_model = require("../models/approved_contributions");
 const rejected_contributions_model = require("../models/rejected_contribution.model");
-const path = require("path");
-const file = require("fs");
-const mongoose = require("mongoose");
-const addResource = async (req, res) => {
+
+// Resource upload controller for both User and Admin
+const uploadResource = async (req, res) => {
   const filepath = req.file.path;
   const filesize = req.file.size;
   let filesize_String = filesize;
@@ -31,13 +35,13 @@ const addResource = async (req, res) => {
       console.log("File added to database");
       res.status(201).json({
         message: "Resource Added Successfully",
-        redirectTo: "/addResource",
+        redirectTo: "/uploadResource",
       });
     } catch (err) {
       console.log("Error adding resource", err);
       res.status(401).send({
         error: "Error adding resource",
-        redirectTo: "/addResource",
+        redirectTo: "/uploadResource",
       });
     } finally {
       file.unlink(filepath, function (err) {
@@ -67,7 +71,7 @@ const addResource = async (req, res) => {
       console.log("Error while uploading contribution", err);
       res.status(401).send({
         error: "Error while uploading contribution",
-        redirectTo: "/addResources",
+        redirectTo: "/uploadResource",
       });
     } finally {
       file.unlink(filepath, function (err) {
@@ -78,7 +82,8 @@ const addResource = async (req, res) => {
   }
 };
 
-const addContribution = async (req, res) => {
+// Accepting contribution controller for Admin
+const acceptContribution = async (req, res) => {
   const user = req.user;
   try {
     const file = await pending_resource_model.findOne({ _id: req.body._id });
@@ -110,16 +115,18 @@ const addContribution = async (req, res) => {
     }
     console.log("Contribution Accepted Successfully");
     res.status(201).send({
-      message: "Contribution Accepted Successfully"
+      message: "Contribution Accepted Successfully",
+      redirectTo: "/"
     });
   } catch (err) {
     console.log("Error: Accepting Contribution Failed", err);
     res.status(401).send({
-      error: "Error: Accepting Contribution Failed"
+      error: "Error: Accepting Contribution Failed",
     });
   }
 };
 
+// Reject contribution controller for Admin
 const rejectContribution = async (req, res) => {
   const user = req.user;
   try {
@@ -140,16 +147,17 @@ const rejectContribution = async (req, res) => {
       console.log("Failed to update Pending Contribution List");
     }
     res.status(201).send({
-      message: "Contribution Rejected"
+      message: "Contribution Rejected",
     });
   } catch (err) {
     console.log("Error: Rejecting Contribution Failed", err);
     res.status(401).send({
-      error: "Error: Rejecting Contribution Failed"
+      error: "Error: Rejecting Contribution Failed",
     });
   }
 };
 
+// Resource deletion controller for Admin
 const deleteResource = async (req, res) => {
   const id = req.params.id;
   try {
@@ -175,13 +183,13 @@ const deleteResource = async (req, res) => {
         if (result.deletedCount == 1) {
           res.status(201).send({
             message: "Resource Deleted",
-            redirectTo: "/resources/subject/" + subjectname,
+            redirectTo: "/subject_catalog/subject/" + subjectname,
           });
         } else {
           await approved_contributions_model.updateOne(
             { contributionId: idObject },
             {
-              status: true
+              status: true,
             }
           );
           console.log("Failed to delete Resource");
@@ -201,7 +209,7 @@ const deleteResource = async (req, res) => {
         console.log("Resource Deleted");
         res.status(201).send({
           message: "Resource Deleted",
-          redirectTo: "/resources/subject/" + subjectname,
+          redirectTo: "/subject_catalog/subject/" + subjectname,
         });
       } else {
         console.log("Failed to delete Resource");
@@ -211,15 +219,16 @@ const deleteResource = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log("Error deleting resource", error);
+    console.log("Failed to delete Resource", error);
     res.status(501).send({
-      error: "Error while deleting resource",
+      error: "Failed to delete Resource",
     });
   }
 };
+
 module.exports = {
-  addResource: addResource,
-  addContribution: addContribution,
+  uploadResource: uploadResource,
+  acceptContribution: acceptContribution,
   rejectContribution: rejectContribution,
   deleteResource: deleteResource,
 };

@@ -1,3 +1,4 @@
+// Dependencies
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -27,6 +28,7 @@ app.use("/js", express.static("public"));
 app.use("/images", express.static("images"));
 app.use("/bootstrap", express.static(path.join(__dirname, "node_modules/bootstrap/dist")));
 
+// Database connnection initiation
 mongoose.connect(db_config.DB_URL);
 const db = mongoose.connection;
 
@@ -84,7 +86,7 @@ app.get("/", auth_middleware.findToken, async (req, res) => {
   }
 });
 
-app.get("/resources", auth_middleware.findToken, async (req, res) => {
+app.get("/subject_catalog", auth_middleware.findToken, async (req, res) => {
   try {
     const subjects = await resource_model
       .aggregate([
@@ -100,7 +102,7 @@ app.get("/resources", auth_middleware.findToken, async (req, res) => {
     if (req.user) {
       user = req.user;
     }
-    return res.render("resources", {
+    return res.render("subject_catalog", {
       subjects: subjects,
       user: user,
       searchvalue : ""
@@ -113,7 +115,7 @@ app.get("/resources", auth_middleware.findToken, async (req, res) => {
   }
 });
 
-app.get("/searchresources", async (req, res) => {
+app.get("/searchcatalog", async (req, res) => {
   const searchvalue = req.query.searchvalue;
   try {
     const subjects = await resource_model.aggregate([
@@ -129,7 +131,7 @@ app.get("/searchresources", async (req, res) => {
     if (req.user) {
       user = req.user;
     }
-    return res.render("resources", {
+    return res.render("subject_catalog", {
       subjects: filteredSubjects,
       user: user,
       searchvalue : searchvalue
@@ -142,7 +144,7 @@ app.get("/searchresources", async (req, res) => {
   }
 });
 
-app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (req, res) => {
+app.get("/subject_catalog/subject/:subject_name", auth_middleware.findToken, async (req, res) => {
   try {
     const subject_name = req.params.subject_name;
     const subject_files = await resource_model.find({ subject_name: subject_name }).select("file_name description filesize contributedBy").sort({ file_name: 1 });
@@ -150,7 +152,7 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
     if (req.user) {
       user = req.user;
     }
-    return res.render("subject", {
+    return res.render("subject_files", {
       subject_name: subject_name,
       subject_files: subject_files,
       user: user,
@@ -163,7 +165,7 @@ app.get("/resources/subject/:subject_name", auth_middleware.findToken, async (re
     });
   }
 });
-app.get("/resources/subject/searchsubjectfiles/:subject_name", async (req, res) => {
+app.get("/subject_catalog/subject/searchfiles/:subject_name", async (req, res) => {
   const searchvalue = req.query.searchvalue;
   const subject_name = req.params.subject_name;
   try {
@@ -173,7 +175,7 @@ app.get("/resources/subject/searchsubjectfiles/:subject_name", async (req, res) 
       user = req.user;
     }
     const filteredSubjectfiles = subject_files.filter((subjectfile) => subjectfile.file_name.includes(searchvalue));
-    return res.render("subject", {
+    return res.render("subject_files", {
       subject_name: subject_name,
       subject_files: filteredSubjectfiles,
       user: user,
@@ -187,7 +189,7 @@ app.get("/resources/subject/searchsubjectfiles/:subject_name", async (req, res) 
   }
 })
 
-app.get("/resources/subject/:subject_name/:file_id", auth_middleware.findToken, async (req, res) => {
+app.get("/subject_catalog/subject/:subject_name/:file_id", auth_middleware.findToken, async (req, res) => {
   const file_id = req.params.file_id;
   let user = undefined;
   if (req.user) {
@@ -195,7 +197,7 @@ app.get("/resources/subject/:subject_name/:file_id", auth_middleware.findToken, 
   }
   try {
     const subject_file = await resource_model.findOne({ _id: file_id });
-    return res.render("pdf", {
+    return res.render("pdf_viewer", {
       user: user,
       _id: subject_file._id,
       subject_code: subject_file.subject_code,
@@ -285,19 +287,16 @@ app.get("/rejectContribution/:id", [auth_middleware.verifyToken, auth_middleware
 });
 
 app.get("/login", async (req, res) => {
-  return res.render("login");
+  return res.render("login", {
+    server_message : ""
+  });
 });
 
-app.get("/addResource", auth_middleware.verifyToken, async (req, res) => {
-  res.render("addResources", {
-    user: req.user,
-  });
-});
-app.get("/addResources", auth_middleware.verifyToken, async (req, res) => {
+app.get("/uploadResource", auth_middleware.verifyToken, async (req, res) => {
   const user = req.user;
-  return res.status(201).send({
-    redirectTo: "addResource",
-  });
+  res.render("uploadResource", {
+      user: req.user
+    });
 });
 
 app.get("/profile", [auth_middleware.verifyToken], async (req, res) => {

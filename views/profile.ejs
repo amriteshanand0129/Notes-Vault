@@ -148,7 +148,7 @@
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resources">Resources</a>
+                        <a class="nav-link" href="/subject_catalog">Resources</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#footer">Contact Us</a>
@@ -260,13 +260,15 @@
                                                                             <span class="heading">Uploaded On:</span>
                                                                             <%= (new
                                                                                 Date(approved_contribution.uploadedOn)).toLocaleDateString('en-US',
-                                                                                { year: 'numeric' , month: 'long' , day: 'numeric' }) %>                                                                                
+                                                                                { year: 'numeric' , month: 'long' ,
+                                                                                day: 'numeric' }) %>
                                                                                 <br>
                                                                                 <span class="heading">Approved
                                                                                     On:</span>
                                                                                 <%= (new
                                                                                     Date(approved_contribution.createdAt)).toLocaleDateString('en-US',
-                                                                                    { year: 'numeric' , month: 'long' , day: 'numeric' }) %>                                                                                    
+                                                                                    { year: 'numeric' , month: 'long' ,
+                                                                                    day: 'numeric' }) %>
                                                                                     <br>
                                                                                     <a href="/downloadfile/<%= approved_contribution._id %>"
                                                                                         download="filename"><button
