@@ -58,7 +58,39 @@ const signin = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  const user = req.user;
+  const newpassword = req.body.password;
+  try {
+    const updation = await user_model.updateOne(
+      {
+        userId: user.userId,
+      },
+      {
+        $set: {
+          password: bcrypt.hashSync(newpassword, 8),
+        },
+      }
+    );
+    if (updation.modifiedCount == 1) {
+      res.status(201).send({
+        message: "Password updated !",
+        redirectTo: "/",
+      });
+    } else
+      res.status(401).send({
+        error: "Failed to update Password",
+      });
+  } catch (error) {
+    console.log("Error while updating password: ", error);
+    res.status(501).send({
+      error: "Failed to update Password",
+    });
+  }
+};
+
 module.exports = {
   signup: signup,
   signin: signin,
+  changePassword: changePassword,
 };

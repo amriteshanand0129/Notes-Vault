@@ -155,4 +155,11 @@ module.exports = (app) => {
       });
     }
   });
+
+  app.get("/changePassword", [auth_middleware.verifyToken], (req, res) => {
+    const user = req.user;
+    res.render("changePassword", {
+      username : user.userId
+    })
+  })
 };

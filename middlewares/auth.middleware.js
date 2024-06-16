@@ -22,7 +22,7 @@ const verifySignUpBody = async (req, res, next) => {
     }
     if (!req.body.userId) {
       return res.status(401).send({
-        error: "Invalid UserId",
+        error: "Invalid Username",
       });
     }
     if (!req.body.password) {
@@ -38,14 +38,14 @@ const verifySignUpBody = async (req, res, next) => {
     const user = await user_model.findOne({ userId: req.body.userId });
     if (user) {
       return res.status(401).send({
-        error: "UserId not available. Try different UserId",
+        error: "Username not available. Try different UserId",
       });
     }
     next();
   } catch (err) {
-    console.log("Error: Request body validation failed", err);
+    console.log("Error: SignUp Request body validation failed", err);
     return res.status(501).send({
-      error: "Error: Request body validation failed",
+      error: "Error: SignUp Request body validation failed",
     });
   }
 };
@@ -65,13 +65,47 @@ const verifySignInBody = (req, res, next) => {
     }
     next();
   } catch (err) {
-    console.log("Error while valiating request body", err);
+    console.log("Error: SignIn Request body validation failed", err);
     return res.send(501).send({
-      error: "Error while validating request body",
+      error: "Error: SignIn Request body validation failed",
       redirectTo: "/login",
     });
   }
 };
+
+const verifyChangePasswordBody = async (req, res, next) => {
+  try {
+    if (!req.body.userId) {
+      return res.status(401).send({
+        error: "Invalid Username",
+      });
+    }
+    if (!req.body.password) {
+      return res.status(401).send({
+        error: "Invalid Password",
+      });
+    }
+    if (req.body.password.length < 8 || req.body.password.length > 16) {
+      return res.status(401).send({
+        error: "Password size should be 8 to 16 characters",
+      });
+    }
+    const user = await user_model.findOne({ userId: req.body.userId });
+    if (!user) {
+      return res.status(401).send({
+        error: "Username not available. Try different UserId",
+      });
+    }
+    else
+      req.user = user;
+    next();
+  } catch (err) {
+    console.log("Error: Password change request body validation failed", err);
+    return res.status(501).send({
+      error: "Error: Password change request body validation failed",
+    });
+  }
+}
 
 /**
  * Checks if token is present, to decide which homepage to render
@@ -174,6 +208,7 @@ const isAdmin = (req, res, next) => {
 module.exports = {
   verifySignUpbody: verifySignUpBody,
   verifySignInBody: verifySignInBody,
+  verifyChangePasswordBody: verifyChangePasswordBody,
   findToken: findToken,
   verifyToken: verifyToken,
   isAdmin: isAdmin,

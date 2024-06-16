@@ -6,4 +6,5 @@ const upload = multer();
 module.exports = (app) => {
   app.post("/signup_user", [upload.none(), auth_middleware.verifySignUpbody], auth_controller.signup);
   app.post("/login_user", [upload.none(), auth_middleware.verifySignInBody], auth_controller.signin);
+  app.post("/changePassword", [upload.none(), auth_middleware.verifyChangePasswordBody], auth_controller.changePassword);
 };
