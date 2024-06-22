@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 
 // Database model modules
 const user_model = require("../models/user.model");
-const auth_config = require("../configs/auth.config");
 
 const app = express();
 
@@ -115,7 +114,7 @@ const findToken = (req, res, next) => {
   try {
     if (req.cookies?.token) {
       const token = req.cookies.token;
-      jwt.verify(token, auth_config.secret, async (err, decoded) => {
+      jwt.verify(token, process.env.secret, async (err, decoded) => {
         if (err) {
           return next();
         }
@@ -153,7 +152,7 @@ const findToken = (req, res, next) => {
 const verifyToken = (req, res, next) => {
   if (req.cookies?.token) {
     const token = req.cookies.token;
-    jwt.verify(token, auth_config.secret, async (err, decoded) => {
+    jwt.verify(token, process.env.secret, async (err, decoded) => {
       if (err) {
         return res.render("login", {
           server_message: "You must be logged in",

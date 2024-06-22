@@ -6,8 +6,7 @@ const cookie_parser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 
 // Configuration modules
-const server_config = require("./configs/server.config");
-const db_config = require("./configs/db.config");
+require("dotenv").config();
 
 // Database model modules
 const user_model = require("./models/user.model");
@@ -22,14 +21,14 @@ app.use("/images", express.static("images"));
 app.use("/bootstrap", express.static(path.join(__dirname, "node_modules/bootstrap/dist")));
 
 // Database connnection initiation
-mongoose.connect(db_config.DB_URL);
+mongoose.connect(process.env.DB_URL);
 const db = mongoose.connection;
 
 db.on("error", () => {
   console.log("Error while connecting to database");
 });
 db.once("open", () => {
-  console.log("Connected to database ", db_config.DB_URL);
+  console.log("Connected to database ", process.env.DB_URL);
   init();
 });
 
@@ -60,6 +59,6 @@ require("./routes/search.route")(app);
 require("./routes/views.route")(app);
 require("./routes/files.route")(app);
 
-app.listen(server_config.PORT, () => {
-  console.log("Server listening at :", server_config.PORT);
+app.listen(process.env.PORT, () => {
+  console.log("Server listening at :", process.env.PORT);
 });

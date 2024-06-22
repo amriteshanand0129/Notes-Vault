@@ -1,7 +1,6 @@
 // Dependencies
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const auth_config = require("../configs/auth.config");
 
 // Database model modules
 var user_model = require("../models/user.model");
@@ -44,7 +43,7 @@ const signin = async (req, res) => {
         error: "Incorrect password",
       });
     }
-    const token = jwt.sign({ id: user.userId }, auth_config.secret, { expiresIn: 7200 });
+    const token = jwt.sign({ id: user.userId }, process.env.secret, { expiresIn: 7200 });
     res.status(201).cookie("token", token);
     res.send({
       message: "Logged In Successfully",
